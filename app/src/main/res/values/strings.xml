@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">SSGPS</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="task_items">
+        <item>Location</item>
+        <item>Safe Zones</item>
+        <item>Settings</item>
+    </string-array>
+
+    <string name="title_activity_locations">Locations</string>
+    <string name="title_activity_safe_zones">Safe Zones</string>
+    <string name="title_activity_Settings">Settings</string>
+    <string name="title_activity_location">LocationActivity</string>
+
+</resources>
