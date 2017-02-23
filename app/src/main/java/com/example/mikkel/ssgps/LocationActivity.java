@@ -16,16 +16,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     protected LocationManager manager;
     protected LocationListener listener;
-
+    Firebase firebaseRef;
     private boolean hasPermission = false;
+    String user = "Mikkel";
 
     public GoogleApiClient mGoogleApiClient;
 
@@ -42,6 +54,8 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     .addApi(LocationServices.API)
                     .build();
         }
+        Firebase.setAndroidContext(this);
+        firebaseRef = new Firebase("https://ssgps-e24c2.firebaseio.com/");
 
     }
 
@@ -79,6 +93,13 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
             if (mLastLocation != null) {
+                SimpleDateFormat tdf=new SimpleDateFormat("HH:mm aa");
+                SimpleDateFormat ddf=new SimpleDateFormat("dd-MM-yyyy");
+                final String date = ddf.format(Calendar.getInstance().getTime());
+                final String time = tdf.format(Calendar.getInstance().getTime());
+                final String lat = String.valueOf(mLastLocation.getLatitude());
+                final String lon = String.valueOf(mLastLocation.getLongitude());
+                addRecord(date,time,lat,lon);
                 Toast.makeText(LocationActivity.this, "Latitude : " + mLastLocation.getLatitude() + "\n Longitude : "+ mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                 //mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
             }
@@ -152,6 +173,17 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 //    public void onConnected(@Nullable Bundle bundle) {
 //
 //    }
+
+    public void addRecord(String date, String time, String lat, String lon){
+        Map map = new HashMap();
+        map.put("uID", "Mikkel");
+        map.put("time", time);
+        map.put("latitude", lat);
+        map.put("longitude", lon);
+
+        //firebaseRef.child("user").child(time+" - "+lat+" "+lon).child(date).setValue(map);
+
+    }
 
     @Override
     public void onConnectionSuspended(int i) {
