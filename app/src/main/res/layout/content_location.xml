@@ -16,10 +16,23 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Location"
+        android:text="Device GPS Location"
         android:id="@+id/buttonLoc"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:onClick="displayLocation"/>
+
+    <Button
+        android:text="Google Play Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonLoc"
+        android:layout_marginTop="48dp"
+        android:id="@+id/button2"
+        android:layout_alignLeft="@+id/buttonLoc"
+        android:layout_alignStart="@+id/buttonLoc"
+        android:layout_alignRight="@+id/buttonLoc"
+        android:layout_alignEnd="@+id/buttonLoc"
+        android:onClick="getLastGooglePlay"/>
 
 </RelativeLayout>
