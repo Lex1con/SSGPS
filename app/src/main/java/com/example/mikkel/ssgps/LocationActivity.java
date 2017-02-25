@@ -17,14 +17,17 @@ import android.view.View;
 import android.widget.Toast;
 
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+//import com.firebase.client.DataSnapshot;
+//import com.firebase.client.Firebase;
+//import com.firebase.client.FirebaseError;
+//import com.firebase.client.ValueEventListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,9 +38,13 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
     protected LocationManager manager;
     protected LocationListener listener;
-    Firebase firebaseRef;
+
+
     private boolean hasPermission = false;
     String user = "Mikkel";
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("message");
+
 
     public GoogleApiClient mGoogleApiClient;
 
@@ -54,8 +61,9 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     .addApi(LocationServices.API)
                     .build();
         }
-        Firebase.setAndroidContext(this);
-        firebaseRef = new Firebase("https://ssgps-e24c2.firebaseio.com/");
+        myRef.setValue("Hello, World!");
+
+
 
     }
 
@@ -180,7 +188,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         map.put("time", time);
         map.put("latitude", lat);
         map.put("longitude", lon);
-
+        //myRef.child(user).child(date).child(time+" - "+lat+" "+lon).push();
         //firebaseRef.child("user").child(time+" - "+lat+" "+lon).child(date).setValue(map);
 
     }
