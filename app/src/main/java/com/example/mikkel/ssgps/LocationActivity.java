@@ -16,12 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-
-//import com.firebase.client.DataSnapshot;
-//import com.firebase.client.Firebase;
-//import com.firebase.client.FirebaseError;
-//import com.firebase.client.ValueEventListener;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -184,12 +178,11 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
     public void addRecord(String date, String time, String lat, String lon){
         Map map = new HashMap();
-        map.put("uID", "Mikkel");
-        map.put("time", time);
+        //map.put("uID", "Mikkel");
         map.put("latitude", lat);
         map.put("longitude", lon);
-        //myRef.child(user).child(date).child(time+" - "+lat+" "+lon).push();
-        //firebaseRef.child("user").child(time+" - "+lat+" "+lon).child(date).setValue(map);
+        DatabaseReference logRef = database.getReference("logs");
+        logRef.child(user).child(date).child(time).setValue(map);
 
     }
 
