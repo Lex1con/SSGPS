@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
                         i.putExtras(bundle);
                         startActivity(i);
                     }
+                    if(position == 1){
+                        Intent i = new Intent(MainActivity.this, ZonesActivity.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
 
                 }
             });

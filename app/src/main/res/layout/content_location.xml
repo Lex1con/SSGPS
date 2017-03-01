@@ -22,17 +22,27 @@
         android:layout_centerHorizontal="true"
         android:onClick="displayLocation"/>
 
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="323dp"
+        android:id="@+id/map"
+        tools:context=".MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <Button
         android:text="Google Play Location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonLoc"
-        android:layout_marginTop="48dp"
         android:id="@+id/button2"
+        android:onClick="getLastGooglePlay"
+        android:layout_marginTop="11dp"
+        android:layout_below="@+id/buttonLoc"
         android:layout_alignLeft="@+id/buttonLoc"
         android:layout_alignStart="@+id/buttonLoc"
         android:layout_alignRight="@+id/buttonLoc"
-        android:layout_alignEnd="@+id/buttonLoc"
-        android:onClick="getLastGooglePlay"/>
+        android:layout_alignEnd="@+id/buttonLoc" />
 
 </RelativeLayout>

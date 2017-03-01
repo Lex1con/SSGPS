@@ -12,5 +12,6 @@
     <string name="title_activity_safe_zones">Safe Zones</string>
     <string name="title_activity_Settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
+    <string name="title_activity_zones">Zones</string>
 
 </resources>
