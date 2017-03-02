@@ -13,5 +13,8 @@
     <string name="title_activity_Settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_activity_zones">Zones</string>
+    <string name="default_info_title">Default Title</string>
+    <string name="default_info_snippet">Default Snippet</string>
+    <string name="pick_place">Pick Place</string>
 
 </resources>
