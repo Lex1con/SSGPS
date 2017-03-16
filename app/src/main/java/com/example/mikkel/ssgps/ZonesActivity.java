@@ -1,9 +1,12 @@
 package com.example.mikkel.ssgps;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.*;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -20,6 +23,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
@@ -33,11 +39,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ZonesActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
-    private static final String TAG = ZonesActivity.class.getSimpleName();
+    private static final String TAG = "ZoneActivity";
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
 
@@ -49,6 +58,7 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
+    public List geofenceList;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -58,25 +68,22 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-    // Used for selecting the current place.
-    private final int mMaxEntries = 5;
-    private String[] mLikelyPlaceNames = new String[mMaxEntries];
-    private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
-    private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
-    private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        geofenceList = new ArrayList();
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+        } else {
+            Log.d("ZonesActivity", "Saved Instance was not null");
         }
 
         setContentView(R.layout.activity_zones);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        // Setup Google Services
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
@@ -85,6 +92,8 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
+
+        // Attempt to Connection to Google Services
         mGoogleApiClient.connect();
     }
 
@@ -106,9 +115,9 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
      */
     @Override
     public void onConnected(Bundle connectionHint) {
+        Log.d("ZoneActivity", "Connected to Google Services");
         // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
 
@@ -129,30 +138,6 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionSuspended(int cause) {
         Log.d(TAG, "Play services connection suspended");
-    }
-
-    /**
-     * Sets up the options menu.
-     * @param menu The options menu.
-     * @return Boolean.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.current_place_menu, menu);
-        return true;
-    }
-
-    /**
-     * Handles a click on the menu option to get a place.
-     * @param item The menu item to handle.
-     * @return Boolean.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
-        }
-        return true;
     }
 
     /**
@@ -187,7 +172,7 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
             public View getInfoContents(Marker marker) {
                 // Inflate the layouts for the info window, title and snippet.
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout)findViewById(R.id.map), false);
+                        (FrameLayout) findViewById(R.id.map), false);
 
                 TextView title = ((TextView) infoWindow.findViewById(R.id.title));
                 title.setText(marker.getTitle());
@@ -210,19 +195,22 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
      * Gets the current location of the device, and positions the map's camera.
      */
     private void getDeviceLocation() {
+        Log.d(TAG, "Get Device Location executed");
         /*
          * Request location permission, so that we can get the location of the
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Permission Granted");
             mLocationPermissionGranted = true;
         } else {
+            Log.d(TAG, "Permission not previously Granted requesting ");
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
         }
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -237,14 +225,62 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else if (mLastKnownLocation != null) {
+            Log.d(TAG, "Current location is not null attempting to create fence");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+            addToGeoFence(mLastKnownLocation);
+            handleGeoFence();
         } else {
-            Log.d(TAG, "Current location is null. Using defaults.");
+            Log.d(TAG, "Current location is null. No fence will be created.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            Location temp = new Location("");
+            temp.setLatitude(mDefaultLocation.latitude);
+            temp.setLongitude(mDefaultLocation.longitude);
+            addToGeoFence(temp);
+            handleGeoFence();
         }
+    }
+
+    public void addToGeoFence(Location location){
+
+        float v = 150;
+        geofenceList.add(new Geofence.Builder()
+                .setRequestId("First Fence")
+
+                .setCircularRegion(
+                        location.getLatitude(),
+                        location.getLongitude(),
+                        v
+                )
+                .setExpirationDuration(60000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setLoiteringDelay(30000)
+                .build()
+        );
+        Log.d(TAG, "Size of Geofence is now "+ geofenceList.size());
+    }
+
+    public void handleGeoFence(){
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("ZoneActivity", "Attempting to setup Add a GeoFence");
+            if (geofenceList != null &&  geofenceList.size() > 0) {
+
+                LocationServices.GeofencingApi.addGeofences(
+                        mGoogleApiClient,
+                        getGeofencingRequest(),
+                        getGeofencePendingIntent()
+                ).setResultCallback(this);
+            }else{
+                Log.d("ZoneActivity", "No values in the geoFence List");
+            }
+        }else{
+            Log.d("ZoneActivity", "Permission for Location not given");
+        }
+        Log.d("ZoneActivity", "Geofence setup complete");
     }
 
     /**
@@ -265,94 +301,6 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
             }
         }
         updateLocationUI();
-    }
-
-    /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
-     * current place on the map - provided the user has granted location permission.
-     */
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Get the likely places - that is, the businesses and other points of interest that
-            // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission")
-            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-                    .getCurrentPlace(mGoogleApiClient, null);
-            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-                    int i = 0;
-                    mLikelyPlaceNames = new String[mMaxEntries];
-                    mLikelyPlaceAddresses = new String[mMaxEntries];
-                    mLikelyPlaceAttributions = new String[mMaxEntries];
-                    mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        // Build a list of likely places to show the user. Max 5.
-                        mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                        mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
-                        mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                .getAttributions();
-                        mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                        i++;
-                        if (i > (mMaxEntries - 1)) {
-                            break;
-                        }
-                    }
-                    // Release the place likelihood buffer, to avoid memory leaks.
-                    likelyPlaces.release();
-
-                    // Show a dialog offering the user the list of likely places, and add a
-                    // marker at the selected place.
-                    openPlacesDialog();
-                }
-            });
-        } else {
-            // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-        }
-    }
-
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The "which" argument contains the position of the selected item.
-                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                        String markerSnippet = mLikelyPlaceAddresses[which];
-                        if (mLikelyPlaceAttributions[which] != null) {
-                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                        }
-                        // Add a marker for the selected place, with an info window
-                        // showing information about that place.
-                        mMap.addMarker(new MarkerOptions()
-                                .title(mLikelyPlaceNames[which])
-                                .position(markerLatLng)
-                                .snippet(markerSnippet));
-
-                        // Position the map's camera at the location of the marker.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                                DEFAULT_ZOOM));
-                    }
-                };
-
-        // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
     }
 
     /**
@@ -387,4 +335,67 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
             mLastKnownLocation = null;
         }
     }
+
+
+
+    public void createFence() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        geofenceList.add(new Geofence.Builder()
+                .setRequestId("First Fence")
+                .setCircularRegion(
+                        mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude(),
+                        1000
+                )
+                .setExpirationDuration(60000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setLoiteringDelay(30000)
+                .build());
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        // Reuse the PendingIntent if we already have it.
+
+//        if (mGeofencePendingIntent != null) {
+//            return mGeofencePendingIntent;
+//        }
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
+        // calling addGeofences() and removeGeofences().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+
+    }
+
+    @Override
+    protected void onPause(){
+        LocationServices.GeofencingApi.removeGeofences(
+                mGoogleApiClient,
+                // This is the same pending intent that was used in addGeofences().
+                getGeofencePendingIntent()
+        ).setResultCallback(this); // Result processed in onResult().
+    }
+
 }
