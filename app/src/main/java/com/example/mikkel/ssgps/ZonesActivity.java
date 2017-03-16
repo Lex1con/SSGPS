@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.*;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -261,6 +264,21 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                 .build()
         );
         Log.d(TAG, "Size of Geofence is now "+ geofenceList.size());
+        Log.d("ZoneActivity", "Attempting to display fence");
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(location.getLatitude(),location.getLongitude()) )
+                .title("First Fence")
+                .snippet("Radius: 150")
+        ).showInfoWindow();
+
+        CircleOptions circleOptions = new CircleOptions()
+                .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                .radius(150)
+                .fillColor(0x40ff0000)
+                .strokeColor(Color.TRANSPARENT)
+                .strokeWidth(2);
+
+        Circle circle = mMap.addCircle(circleOptions);
     }
 
     public void handleGeoFence(){
@@ -276,11 +294,14 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                 ).setResultCallback(this);
             }else{
                 Log.d("ZoneActivity", "No values in the geoFence List");
+                return;
             }
         }else{
             Log.d("ZoneActivity", "Permission for Location not given");
+            return;
         }
         Log.d("ZoneActivity", "Geofence setup complete");
+
     }
 
     /**
