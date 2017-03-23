@@ -8,6 +8,12 @@
         <item>Settings</item>
     </string-array>
 
+    <string-array name="radius_sizes">
+        <item>100</item>
+        <item>150</item>
+        <item>200</item>
+    </string-array>
+
     <string name="title_activity_locations">Locations</string>
     <string name="title_activity_safe_zones">Safe Zones</string>
     <string name="title_activity_Settings">Settings</string>

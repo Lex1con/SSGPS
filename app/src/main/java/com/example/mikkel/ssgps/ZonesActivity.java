@@ -1,6 +1,7 @@
 package com.example.mikkel.ssgps;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,10 +15,14 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,7 +52,7 @@ import java.util.List;
 
 public class ZonesActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+        GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, GoogleMap.OnMapLongClickListener {
 
     private static final String TAG = "ZoneActivity";
     private GoogleMap mMap;
@@ -62,6 +67,9 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
     public List geofenceList;
+    public List markerList;
+    public List circleList;
+    public List uwiFenceList;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -75,6 +83,8 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         geofenceList = new ArrayList();
+        markerList = new ArrayList();
+        circleList = new ArrayList();
 
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -161,6 +171,26 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                marker.setSnippet("Radius: 150 \n Latitude: "+marker.getPosition().latitude+"\n Longitude: "+marker.getPosition().longitude);
+                marker.showInfoWindow();
+            }
+        });
+//        mMap.setOnMarkerClickListener(new );
+
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -172,7 +202,10 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
             }
 
             @Override
-            public View getInfoContents(Marker marker) {
+            public View getInfoContents(final Marker marker) {
+
+
+
                 // Inflate the layouts for the info window, title and snippet.
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
                         (FrameLayout) findViewById(R.id.map), false);
@@ -183,9 +216,34 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                 TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
                 snippet.setText(marker.getSnippet());
 
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(final Marker marker) {
+                        new AlertDialog.Builder(ZonesActivity.this)
+                                .setTitle("Create Fence")
+                                .setMessage("Would you like to delete this Safe Zone?")
+                                .setNegativeButton(android.R.string.cancel,null)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        deleteFence(marker);
+                                    }
+                                })
+                                .create()
+                                .show();
+                        return false;
+                    }
+                });
+
+
+
                 return infoWindow;
             }
+
+
         });
+
+        mMap.setOnMapLongClickListener(this);
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -228,13 +286,13 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
         } else if (mLastKnownLocation != null) {
-            Log.d(TAG, "Current location is not null attempting to create fence");
+            //Log.d(TAG, "Current location is not null attempting to create fence");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
-            addToGeoFence(mLastKnownLocation);
-            handleGeoFence();
+            //addToGeoFence(mLastKnownLocation);
+            //handleGeoFence();
         } else {
             Log.d(TAG, "Current location is null. No fence will be created.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
@@ -242,43 +300,59 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
             Location temp = new Location("");
             temp.setLatitude(mDefaultLocation.latitude);
             temp.setLongitude(mDefaultLocation.longitude);
-            addToGeoFence(temp);
+            addToGeoFence(temp,150);
             handleGeoFence();
         }
     }
 
-    public void addToGeoFence(Location location){
+    public void addToGeoFence(Location location, float radius){
 
-        float v = 150;
         geofenceList.add(new Geofence.Builder()
-                .setRequestId("First Fence")
-
+                .setRequestId(String.valueOf(geofenceList.size()))
                 .setCircularRegion(
                         location.getLatitude(),
                         location.getLongitude(),
-                        v
+                        radius
                 )
                 .setExpirationDuration(60000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .setLoiteringDelay(30000)
                 .build()
         );
-        Log.d(TAG, "Size of Geofence is now "+ geofenceList.size());
+        Log.d(TAG, "Size of Geofence list is now "+ geofenceList.size());
         Log.d("ZoneActivity", "Attempting to display fence");
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(location.getLatitude(),location.getLongitude()) )
-                .title("First Fence")
-                .snippet("Radius: 150")
-        ).showInfoWindow();
+//        MarkerOptions fenceMarker = new MarkerOptions()
+//                .position(new LatLng(location.getLatitude(),location.getLongitude()) )
+//                .title(String.valueOf(geofenceList.size()))
+//                .snippet("Radius: 150 \n Latitude: "+location.getLatitude()+"\n Longitude: "+location.getLongitude());
+//
+//        mMap.addMarker( fenceMarker
+//        ).showInfoWindow();
+//
+//        markerList.add(fenceMarker);
+//
+//        CircleOptions circleOptions = new CircleOptions()
+//                .center(new LatLng(location.getLatitude(), location.getLongitude()))
+//                .radius(150)
+//                .fillColor(0x40ff0000)
+//                .strokeColor(Color.TRANSPARENT)
+//                .strokeWidth(2);
 
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(location.getLatitude(), location.getLongitude()))
-                .radius(150)
-                .fillColor(0x40ff0000)
-                .strokeColor(Color.TRANSPARENT)
-                .strokeWidth(2);
+        //Circle circle = mMap.addCircle(circleOptions);
+        //circleList.add(circle);
+    }
 
-        Circle circle = mMap.addCircle(circleOptions);
+    public void deleteFence(Marker marker){
+        Log.d("ZoneActivity", "Attempting to delete Fence");
+//        int id = Integer.valueOf(marker.getTitle()) - 1;
+//        Log.d("ZoneActivity", "Attempting to delete Fence: "+ id);
+//        geofenceList.remove(id);
+//        markerList.remove(id);
+        marker.remove();
+//        Circle circle = (Circle) circleList.get(id);
+//        circle.remove();
+//        circleList.remove(id);
+        Log.d("ZoneActivity", "Fence Deleted");
     }
 
     public void handleGeoFence(){
@@ -357,34 +431,6 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
         }
     }
 
-
-
-    public void createFence() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        geofenceList.add(new Geofence.Builder()
-                .setRequestId("First Fence")
-                .setCircularRegion(
-                        mLastLocation.getLatitude(),
-                        mLastLocation.getLongitude(),
-                        1000
-                )
-                .setExpirationDuration(60000)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setLoiteringDelay(30000)
-                .build());
-    }
-
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
@@ -394,10 +440,6 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private PendingIntent getGeofencePendingIntent() {
         // Reuse the PendingIntent if we already have it.
-
-//        if (mGeofencePendingIntent != null) {
-//            return mGeofencePendingIntent;
-//        }
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
@@ -412,11 +454,80 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     protected void onPause(){
+        super.onPause();
         LocationServices.GeofencingApi.removeGeofences(
                 mGoogleApiClient,
                 // This is the same pending intent that was used in addGeofences().
                 getGeofencePendingIntent()
         ).setResultCallback(this); // Result processed in onResult().
     }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        final Location temp = new Location("");
+        temp.setLatitude(latLng.latitude);
+        temp.setLongitude(latLng.longitude);
+
+        final MarkerOptions fenceMarker;
+        fenceMarker = new MarkerOptions()
+                .draggable(true)
+                .position(new LatLng(temp.getLatitude(),temp.getLongitude()) )
+                .title("Marker Test");
+        fenceMarker.snippet("Radius: 150 \n Latitude: "+fenceMarker.getPosition().latitude+"\n Longitude: "+fenceMarker.getPosition().longitude);
+        mMap.addMarker( fenceMarker
+        ).showInfoWindow();
+
+        new AlertDialog.Builder(ZonesActivity.this)
+                .setTitle("Create Fence")
+                .setMessage("Would you like to place a Safe Zone here?")
+                .setNegativeButton(android.R.string.cancel,null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        Dialog radiusDialog = new Dialog(ZonesActivity.this);
+//                        LayoutInflater inflater = (LayoutInflater)ZonesActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+//                        View layout = inflater.inflate(R.layout.radius_set_dialog, (ViewGroup)findViewById(R.id.radius_set_root));
+//                        radiusDialog.setContentView(layout);
+                        new AlertDialog.Builder(ZonesActivity.this)
+                                .setTitle("Select a Radius size")
+                                .setItems(R.array.radius_sizes, new DialogInterface.OnClickListener(){
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        CircleOptions circleOptions = new CircleOptions()
+                                                .center(fenceMarker.getPosition())
+                                                .fillColor(0x40ff0000)
+                                                .strokeColor(Color.TRANSPARENT)
+                                                .strokeWidth(2);
+
+                                        if(which == 0){
+                                            circleOptions.radius(100);
+                                            addToGeoFence(temp,100);
+                                            handleGeoFence();
+                                        }
+                                        if(which == 1){
+                                            circleOptions.radius(150);
+                                            addToGeoFence(temp,150);
+                                            handleGeoFence();
+                                        }
+                                        if(which == 2){
+                                            circleOptions.radius(200);
+                                            addToGeoFence(temp,200);
+                                            handleGeoFence();
+                                        }
+
+
+                                        Circle circle = mMap.addCircle(circleOptions);
+                                        circleList.add(circle);
+                                    }
+                                })
+                                .create()
+                                .show();
+                    }
+                })
+                .create()
+                .show();
+
+    }
+
 
 }
