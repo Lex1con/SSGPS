@@ -51,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
                         i.putExtras(bundle);
                         startActivity(i);
                     }
+                    if(position == 2){
+                        Intent i = new Intent(MainActivity.this, SendSMSActivity.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
 
                 }
             });
