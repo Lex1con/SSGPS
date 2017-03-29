@@ -18,38 +18,58 @@ public class SendSMSActivity extends Activity {
     Button buttonSend;
     EditText textPhoneNo;
     EditText textSMS;
-
+    String contact="8683317613";
+    String msg="Latitude: Longitude: ";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d("SMSSctivity", "SMS activity created");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_sms);
 
-        buttonSend = (Button) findViewById(R.id.buttonSend);
-        textPhoneNo = (EditText) findViewById(R.id.editTextPhoneNo);
-        textSMS = (EditText) findViewById(R.id.editTextSMS);
+        //buttonSend = (Button) findViewById(R.id.buttonSend);
+        //textPhoneNo = (EditText) findViewById(R.id.editTextPhoneNo);
+        //textSMS = (EditText) findViewById(R.id.editTextSMS);
 
-        buttonSend.setOnClickListener(new OnClickListener() {
+        //send message on activity load-----------------------
+        String phoneNo = contact;
+        String sms = msg;
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, sms, null, null);
+            Toast.makeText(getApplicationContext(), "SMS Sent!",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
 
-            @Override
-            public void onClick(View v) {
+            Toast.makeText(getApplicationContext(),
+                    e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+        //-----------------------------------------------------
 
-                String phoneNo = textPhoneNo.getText().toString();
-                String sms = textSMS.getText().toString();
 
-                try {
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(phoneNo, null, sms, null, null);
-                    Toast.makeText(getApplicationContext(), "SMS Sent!",
-                            Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(),
-                            "SMS faild, please try again later!",
-                            Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        buttonSend.setOnClickListener(new OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//                String phoneNo = textPhoneNo.getText().toString();
+//                String sms = textSMS.getText().toString();
+//                String phoneNo = contact;
+//                String sms = msg;
+//                try {
+//                    SmsManager smsManager = SmsManager.getDefault();
+//                    smsManager.sendTextMessage(phoneNo, null, sms, null, null);
+//                    Toast.makeText(getApplicationContext(), "SMS Sent!",
+//                            Toast.LENGTH_LONG).show();
+//                } catch (Exception e) {
+//                    Toast.makeText(getApplicationContext(),
+//                            "SMS faild, please try again later!",
+//                            Toast.LENGTH_LONG).show();
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
     }
 }
