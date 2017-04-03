@@ -46,9 +46,13 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ZonesActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -57,6 +61,7 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     private static final String TAG = "ZoneActivity";
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -344,11 +349,12 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
     public void deleteFence(Marker marker){
         Log.d("ZoneActivity", "Attempting to delete Fence");
-//        int id = Integer.valueOf(marker.getTitle()) - 1;
-//        Log.d("ZoneActivity", "Attempting to delete Fence: "+ id);
+//        int id = Integer.valueOf(marker.getTitle());
+        int id = markerList.indexOf(marker.getPosition() );
+        Log.d("ZoneActivity", "Attempting to delete Fence: "+ id);
 //        geofenceList.remove(id);
+//        marker.remove();
 //        markerList.remove(id);
-        marker.remove();
 //        Circle circle = (Circle) circleList.get(id);
 //        circle.remove();
 //        circleList.remove(id);
@@ -484,10 +490,6 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        Dialog radiusDialog = new Dialog(ZonesActivity.this);
-//                        LayoutInflater inflater = (LayoutInflater)ZonesActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-//                        View layout = inflater.inflate(R.layout.radius_set_dialog, (ViewGroup)findViewById(R.id.radius_set_root));
-//                        radiusDialog.setContentView(layout);
                         new AlertDialog.Builder(ZonesActivity.this)
                                 .setTitle("Select a Radius size")
                                 .setItems(R.array.radius_sizes, new DialogInterface.OnClickListener(){
@@ -501,16 +503,19 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
                                         if(which == 0){
                                             circleOptions.radius(100);
+                                            markerList.add(fenceMarker);
                                             addToGeoFence(temp,100);
                                             handleGeoFence();
                                         }
                                         if(which == 1){
                                             circleOptions.radius(150);
+                                            markerList.add(fenceMarker);
                                             addToGeoFence(temp,150);
                                             handleGeoFence();
                                         }
                                         if(which == 2){
                                             circleOptions.radius(200);
+                                            markerList.add(fenceMarker);
                                             addToGeoFence(temp,200);
                                             handleGeoFence();
                                         }
@@ -525,8 +530,19 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                     }
                 })
                 .create()
-                .show();
+                .show(); 
 
+    }
+
+    public void addRecord(LatLng latLng, int id, int rad){
+        Map map = new HashMap();
+        String ID = String.valueOf(id);
+        map.put("ID", id);
+        map.put("latitude", latLng.latitude);
+        map.put("longitude", latLng.longitude);
+        map.put("Radius", rad);
+        DatabaseReference logRef = database.getReference("Fences");
+        logRef.child("uwiFences").child(ID).setValue(map);
     }
 
 
