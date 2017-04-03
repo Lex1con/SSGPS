@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         boolean hasPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean hasPermission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
 
         if(!hasPermission){
             ActivityCompat.requestPermissions(this,
@@ -33,6 +34,16 @@ public class MainActivity extends AppCompatActivity {
             if(!isServiceSet())
                 startBackgroundProcess();
         }
+
+        if(!hasPermission2){
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.SEND_SMS},
+                    MY_PERMISSION_CODE);
+        }
+//        else{
+//            if(!isServiceSet())
+//                startBackgroundProcess();
+//        }
 
         ListView lv = (ListView)findViewById(R.id.menu_list);
         if(lv != null) {
@@ -48,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if(position == 1){
                         Intent i = new Intent(MainActivity.this, ZonesActivity.class);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
+                    if(position == 2){
+                        Intent i = new Intent(MainActivity.this, SendSMSActivity.class);
                         i.putExtras(bundle);
                         startActivity(i);
                     }

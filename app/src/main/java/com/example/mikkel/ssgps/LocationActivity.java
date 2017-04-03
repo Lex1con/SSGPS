@@ -32,7 +32,8 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
     protected LocationManager manager;
     protected LocationListener listener;
-
+    public String dLat="0";
+    public String dLong="0";
 
     private boolean hasPermission = false;
     String user = "Mikkel";
@@ -101,6 +102,8 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                 final String time = tdf.format(Calendar.getInstance().getTime());
                 final String lat = String.valueOf(mLastLocation.getLatitude());
                 final String lon = String.valueOf(mLastLocation.getLongitude());
+                dLat=lat;
+                dLong=lon;
                 addRecord(date,time,lat,lon);
                 Toast.makeText(LocationActivity.this, "Latitude : " + mLastLocation.getLatitude() + "\n Longitude : "+ mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                 //mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
 package="com.example.mikkel.ssgps">
 
+<uses-permission android:name="android.permission.SEND_SMS" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -34,6 +35,9 @@ package="com.example.mikkel.ssgps">
 
     <service android:name=".GeofenceTransitionsIntentService"/>
 
+    <activity android:name="com.example.mikkel.ssgps.SendSMSActivity" android:label="@string/title_activity_SMS">
+        <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.example.mikkel.ssgps.MainActivity" />
+    </activity>
 </application>
 
 

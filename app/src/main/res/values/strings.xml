@@ -5,6 +5,7 @@
     <string-array name="task_items">
         <item>Location</item>
         <item>Safe Zones</item>
+        <item>Message Updates</item>
         <item>Settings</item>
     </string-array>
 
@@ -19,6 +20,7 @@
     <string name="title_activity_Settings">Settings</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_activity_zones">Zones</string>
+    <string name="title_activity_SMS">SMSActivity</string>
     <string name="default_info_title">Default Title</string>
     <string name="default_info_snippet">Default Snippet</string>
     <string name="pick_place">Pick Place</string>
