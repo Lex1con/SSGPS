@@ -1,28 +1,11 @@
 <resources>
     <string name="app_name">SSGPS</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="action_settings">Settings</string>
 
-    <string-array name="task_items">
-        <item>Location</item>
-        <item>Safe Zones</item>
-        <item>Message Updates</item>
-        <item>Settings</item>
-    </string-array>
-
-    <string-array name="radius_sizes">
-        <item>100</item>
-        <item>150</item>
-        <item>200</item>
-    </string-array>
-
-    <string name="title_activity_locations">Locations</string>
-    <string name="title_activity_safe_zones">Safe Zones</string>
-    <string name="title_activity_Settings">Settings</string>
-    <string name="title_activity_location">LocationActivity</string>
-    <string name="title_activity_zones">Zones</string>
-    <string name="title_activity_SMS">SMSActivity</string>
-    <string name="default_info_title">Default Title</string>
-    <string name="default_info_snippet">Default Snippet</string>
-    <string name="pick_place">Pick Place</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
