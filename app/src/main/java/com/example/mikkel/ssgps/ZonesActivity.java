@@ -76,6 +76,8 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     public List circleList;
     public List uwiFenceList;
 
+    public int x = 1;
+
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private android.location.Location mLastKnownLocation;
@@ -226,11 +228,15 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                     public boolean onMarkerClick(final Marker marker) {
                         new AlertDialog.Builder(ZonesActivity.this)
                                 .setTitle("Create Fence")
-                                .setMessage("Would you like to delete this Safe Zone?")
+                                .setMessage("Would you like to Make this Zone Permanent?")
                                 .setNegativeButton(android.R.string.cancel,null)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+//                                        LatLng latLng = marker.getPosition();
+//                                        int id = Integer.valueOf(marker.getTitle());
+//                                        Object r = marker.getTag();
+//                                        addRecord(latLng,id, (Integer) r);
                                         deleteFence(marker);
                                     }
                                 })
@@ -349,15 +355,17 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
     public void deleteFence(Marker marker){
         Log.d("ZoneActivity", "Attempting to delete Fence");
-//        int id = Integer.valueOf(marker.getTitle());
-        int id = markerList.indexOf(marker.getPosition() );
-        Log.d("ZoneActivity", "Attempting to delete Fence: "+ id);
-//        geofenceList.remove(id);
-//        marker.remove();
-//        markerList.remove(id);
-//        Circle circle = (Circle) circleList.get(id);
-//        circle.remove();
-//        circleList.remove(id);
+        int id = Integer.valueOf(marker.getTitle());
+        int listid = markerList.indexOf(marker);
+        Log.d("ZoneActivity", "Fence ID:"+ id);
+        Log.d("ZoneActivity", "List ID:"+ listid);
+
+        geofenceList.remove(listid);
+        marker.remove();
+        markerList.remove(listid);
+        Circle circle = (Circle) circleList.get(listid);
+        circle.remove();
+        circleList.remove(listid);
         Log.d("ZoneActivity", "Fence Deleted");
     }
 
@@ -444,6 +452,7 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
         return builder.build();
     }
 
+
     private PendingIntent getGeofencePendingIntent() {
         // Reuse the PendingIntent if we already have it.
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
@@ -478,10 +487,10 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
         fenceMarker = new MarkerOptions()
                 .draggable(true)
                 .position(new LatLng(temp.getLatitude(),temp.getLongitude()) )
-                .title("Marker Test");
+                .title(String.valueOf(x));
+        x++;
         fenceMarker.snippet("Radius: 150 \n Latitude: "+fenceMarker.getPosition().latitude+"\n Longitude: "+fenceMarker.getPosition().longitude);
-        mMap.addMarker( fenceMarker
-        ).showInfoWindow();
+        final Marker marker = mMap.addMarker( fenceMarker);
 
         new AlertDialog.Builder(ZonesActivity.this)
                 .setTitle("Create Fence")
@@ -503,19 +512,22 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
 
                                         if(which == 0){
                                             circleOptions.radius(100);
-                                            markerList.add(fenceMarker);
+                                            marker.setTag(100);
+                                            markerList.add(marker);
                                             addToGeoFence(temp,100);
                                             handleGeoFence();
                                         }
                                         if(which == 1){
                                             circleOptions.radius(150);
-                                            markerList.add(fenceMarker);
+                                            marker.setTag(100);
+                                            markerList.add(marker);
                                             addToGeoFence(temp,150);
                                             handleGeoFence();
                                         }
                                         if(which == 2){
                                             circleOptions.radius(200);
-                                            markerList.add(fenceMarker);
+                                            marker.setTag(100);
+                                            markerList.add(marker);
                                             addToGeoFence(temp,200);
                                             handleGeoFence();
                                         }

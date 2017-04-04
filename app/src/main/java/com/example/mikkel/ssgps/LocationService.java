@@ -26,10 +26,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 /**
  * Created by M.hayes on 4/12/2016.
  */
-public class LocationService extends IntentService implements CloseListener{
+public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, CloseListener{
 
     private static final String NAME = "LocationService";
     Context context;
@@ -139,6 +142,11 @@ public class LocationService extends IntentService implements CloseListener{
     @Override
     public void onConnectionSuspended(int i) {
         Log.d("Location Service", "Connection Suspended");
+    }
+
+    public void onLocationChanged(Location location){
+        Location mCurrentLocation = location;
+        String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
     }
 
 }
