@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.health.ServiceHealthStats;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,16 +43,18 @@ import java.util.Date;
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, CloseListener{
 
     private static final String NAME = "LocationService";
-//    private Looper mServiceLooper;
-//    private ServiceHandler mServiceHandler;
-    Context context;
+    Location lastlocation;
     public GoogleApiClient mGoogleApiClient;
-    LocationRequest mLocationRequest;
+    LocationRequest mLocationRequest = LocationRequest.create();
+    protected com.google.android.gms.location.LocationListener glistener;
 
     protected ConnectivityManager connManager;
     protected NetworkInfo mWifi;
-    protected LocationManager manager;
+
+
     protected LocationListener listener;
+    protected LocationManager manager;
+
     private boolean hasPermission = false;
 
 //    SQLiteOpenHelper helper = new DBHelper(this);
@@ -65,16 +68,14 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifi = connManager.getActiveNetworkInfo();
         Log.d("LocationService","Handling intent for service");
-        //            Thread.sleep(5000);
-//        Log.d("Location Service", "Sleeping");
 
         if(mWifi != null){
             if(mWifi.getType() == ConnectivityManager.TYPE_MOBILE){
                 Log.d("LocationService","Connected to mobile data. Charges will be applied");
-                Toast.makeText(context, "Connected to mobile data. Charges will be applied", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(LocationService.this, "Connected to mobile data. Charges will be applied", Toast.LENGTH_SHORT).show();
             }else{
                 Log.d("LocationService","Connected to WIFI. Charges will not be applied");
-                Toast.makeText(context, "Connected to WIFI. Charges will not be applied", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(LocationService.this, "Connected to WIFI. Charges will not be applied", Toast.LENGTH_SHORT).show();
             }
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -83,17 +84,30 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
                         .addApi(LocationServices.API)
                         .build();
             }
+            glistener = new com.google.android.gms.location.LocationListener(){
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("Location Service"," New location: "+ location);
+                    lastlocation.set(location);
+                }
+            };
             mGoogleApiClient.connect();
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest, glistener);
+
 
 
 
         }
         else{
+            Log.d("LocationService","No internet connection, Using Device GPS");
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             listener = new LocationListener() {
+
                 @Override
                 public void onLocationChanged(Location location) {
-                    Toast.makeText(LocationService.this, "Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
-
+                    Log.d("Location Service"," New location: Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude());
+                    Toast.makeText(getApplicationContext(), "Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    lastlocation.set(location);
                 }
 
                 @Override
@@ -133,13 +147,22 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("Location Service", "Google Client connected");
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        lastlocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mLocationRequest.setInterval(500);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("Location service","No permission ");
         } else {
-            if (location == null) {
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+            if (lastlocation == null) {
+                Log.d("Location service","Location is NUll ");
             }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new com.google.android.gms.location.LocationListener(){
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("Location Service"," New location: Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude());
+                    Toast.makeText(getApplicationContext(), "Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    lastlocation.set(location);
+                }
+            });
         }
     }
 
@@ -154,8 +177,9 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     }
 
 //    public void onLocationChanged(Location location){
-//        Location mCurrentLocation = location;
-//        String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+//        Log.d("Location Service"," New location: "+ location);
+//        lastlocation.set(location);
+//
 //    }
 
 }
