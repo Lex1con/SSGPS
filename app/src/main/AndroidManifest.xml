@@ -34,6 +34,8 @@ package="com.example.mikkel.ssgps">
     </activity>
 
     <service android:name=".GeofenceTransitionsIntentService"/>
+    <service android:name=".LocationService"/>
+
 
     <activity android:name="com.example.mikkel.ssgps.SendSMSActivity" android:label="@string/title_activity_SMS">
         <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.example.mikkel.ssgps.MainActivity" />

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("MainActivity", "Starting Process");
+        Intent intent = new Intent(this, LocationService.class);
+        startService(intent);
 
         boolean hasPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         boolean hasPermission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
@@ -80,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startBackgroundProcess(){
+//        Log.d("MainActivity", "Starting Process");
+//        Intent intent = new Intent(this, LocationService.class);
+//        startService(intent);
         LocationReciever.setUpService(this);
         SharedPreferences.Editor editor = getSharedPreferences("DCIT",Context.MODE_PRIVATE).edit();
         editor.putBoolean("service_set", true).apply();

@@ -15,6 +15,13 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.os.health.ServiceHealthStats;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -35,6 +42,8 @@ import java.util.Date;
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, CloseListener{
 
     private static final String NAME = "LocationService";
+//    private Looper mServiceLooper;
+//    private ServiceHandler mServiceHandler;
     Context context;
     public GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
@@ -45,8 +54,8 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
     protected LocationListener listener;
     private boolean hasPermission = false;
 
-    SQLiteOpenHelper helper = new DBHelper(this);
-    final SQLiteDatabase db = helper.getWritableDatabase();
+//    SQLiteOpenHelper helper = new DBHelper(this);
+//    final SQLiteDatabase db = helper.getWritableDatabase();
 
     public LocationService(){super(NAME);}
 
@@ -55,20 +64,26 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifi = connManager.getActiveNetworkInfo();
+        Log.d("LocationService","Handling intent for service");
+        //            Thread.sleep(5000);
+//        Log.d("Location Service", "Sleeping");
 
         if(mWifi != null){
             if(mWifi.getType() == ConnectivityManager.TYPE_MOBILE){
+                Log.d("LocationService","Connected to mobile data. Charges will be applied");
                 Toast.makeText(context, "Connected to mobile data. Charges will be applied", Toast.LENGTH_SHORT).show();
+            }else{
+                Log.d("LocationService","Connected to WIFI. Charges will not be applied");
+                Toast.makeText(context, "Connected to WIFI. Charges will not be applied", Toast.LENGTH_SHORT).show();
             }
             if (mGoogleApiClient == null) {
                 mGoogleApiClient = new GoogleApiClient.Builder(this)
-                        .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) context)
-                        .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
                         .addApi(LocationServices.API)
                         .build();
             }
             mGoogleApiClient.connect();
-
 
 
 
@@ -77,14 +92,8 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
             listener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    Double lon = location.getLongitude();
-                    Double lat = location.getLatitude();
-                    final String sql =
-                            "INSERT INTO " + LocationContract.LocationEntry.TABLE_NAME +
-                                    " (" + LocationContract.LocationEntry._ID + "," + LocationContract.LocationEntry.LON +
-                                    "," + LocationContract.LocationEntry.LAT + ") VALUES " +
-                                    "(null, " + lon.toString() + ", " + lat.toString() + ")";
-                    db.execSQL(sql);
+                    Toast.makeText(LocationService.this, "Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override
@@ -144,9 +153,9 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
         Log.d("Location Service", "Connection Suspended");
     }
 
-    public void onLocationChanged(Location location){
-        Location mCurrentLocation = location;
-        String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-    }
+//    public void onLocationChanged(Location location){
+//        Location mCurrentLocation = location;
+//        String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+//    }
 
 }

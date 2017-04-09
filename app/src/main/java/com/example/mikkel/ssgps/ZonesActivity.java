@@ -317,7 +317,9 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void addToGeoFence(Location location, float radius){
-
+        /*
+        * Adds a Geofence to the list of fences in the system at a location and a given radius
+        */
         geofenceList.add(new Geofence.Builder()
                 .setRequestId(String.valueOf(geofenceList.size()))
                 .setCircularRegion(
@@ -326,34 +328,18 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
                         radius
                 )
                 .setExpirationDuration(60000)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setLoiteringDelay(30000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build()
         );
         Log.d(TAG, "Size of Geofence list is now "+ geofenceList.size());
         Log.d("ZoneActivity", "Attempting to display fence");
-//        MarkerOptions fenceMarker = new MarkerOptions()
-//                .position(new LatLng(location.getLatitude(),location.getLongitude()) )
-//                .title(String.valueOf(geofenceList.size()))
-//                .snippet("Radius: 150 \n Latitude: "+location.getLatitude()+"\n Longitude: "+location.getLongitude());
-//
-//        mMap.addMarker( fenceMarker
-//        ).showInfoWindow();
-//
-//        markerList.add(fenceMarker);
-//
-//        CircleOptions circleOptions = new CircleOptions()
-//                .center(new LatLng(location.getLatitude(), location.getLongitude()))
-//                .radius(150)
-//                .fillColor(0x40ff0000)
-//                .strokeColor(Color.TRANSPARENT)
-//                .strokeWidth(2);
-
-        //Circle circle = mMap.addCircle(circleOptions);
-        //circleList.add(circle);
     }
 
     public void deleteFence(Marker marker){
+        /*
+        Takes a marker that is associated with a GeoFence and uses it to delete the GeoFence from the system
+         */
+
         Log.d("ZoneActivity", "Attempting to delete Fence");
         int id = Integer.valueOf(marker.getTitle());
         int listid = markerList.indexOf(marker);
@@ -370,6 +356,10 @@ public class ZonesActivity extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void handleGeoFence(){
+
+        /*
+        handleGeoFence takes the list of fences and places them on the map and calls the GeoFence Services.
+         */
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d("ZoneActivity", "Attempting to setup Add a GeoFence");
