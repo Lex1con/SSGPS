@@ -1,11 +1,8 @@
 package com.example.craig.ssgps;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +31,7 @@ public class MainActivity extends AppCompatActivity
 
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -120,33 +118,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_location) {
-            Location locationFragment = new Location();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(
-                    R.id.relative_layout,
-                    locationFragment,
-                    locationFragment.getTag()
-            ).addToBackStack(null)
-                    .commit();
-        } else if (id == R.id.nav_contacts) {
-            Contacts contactsFragment = new Contacts();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(
-                    R.id.relative_layout,
-                    contactsFragment,
-                    contactsFragment.getTag()
-            ).addToBackStack(null)
-                    .commit();
-        } else if (id == R.id.nav_settings) {
-            Settings settingsFragment = new Settings();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(
-                    R.id.relative_layout,
-                    settingsFragment,
-                    settingsFragment.getTag()
-            ).addToBackStack(null)
-                    .commit();
+        if (id == R.id.nav_locationActivity) {
+            Intent intent;
+            intent = new Intent(MainActivity.this, LocationActivity.class);
+//            intent.putExtra();
+            startActivity(intent);
+        } else if (id == R.id.nav_contactsActivity) {
+            Intent intent;
+            intent = new Intent(MainActivity.this, ContactsActivity.class);
+//            intent.putExtra();
+            startActivity(intent);
+        } else if (id == R.id.nav_settingsActivity) {
+            Intent intent;
+            intent = new Intent(MainActivity.this, SettingsActivity.class);
+//            intent.putExtra();
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

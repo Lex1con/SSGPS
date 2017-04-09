@@ -7,23 +7,23 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class AddContactDBHelper extends SQLiteOpenHelper {
+public class ContactDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "ssgps.db";
     public static final String TABLE_NAME = "contacts_table";
     public static final String Contact_ID = "ID";
     public static final String Contact_NUM = "number";
     public static final String Contact_NAME = "name";
     public static final String Contact_Priority = "priority";
+    SQLiteDatabase db = this.getWritableDatabase();
 
-
-    public AddContactDBHelper(Context context) {
+    public ContactDBHelper(Context context) {
         super(context, DB_NAME, null, 1);
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT, checks INTEGER, report INTEGER, missed_checks INTEGER)");
+        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, number INTEGER, priority INTEGER)");
     }
 
     @Override
@@ -32,6 +32,7 @@ public class AddContactDBHelper extends SQLiteOpenHelper {
         onCreate(db);
 
     }
+
 
     public boolean insertData(String number,String name,String priority) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -53,7 +54,6 @@ public class AddContactDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateData(String id,String number,String name,String priority) {
-        id = "1";
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Contact_ID,id);

@@ -1,9 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.craig.ssgps.SettingsActivity">
+    tools:context="com.example.craig.ssgps.Settings">
 
-</android.support.constraint.ConstraintLayout>
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/check_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Interval"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="14dp" />
+
+    <SeekBar
+        android:id="@+id/check_bar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:max="3"
+        android:progress="1"
+        android:layout_below="@+id/check_interval"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/check_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/settings_save"
+        android:layout_below="@+id/check_bar"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="check" />
+
+    <TextView
+        android:id="@+id/report_interval"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="81dp"
+        android:text="Report Interval"
+        android:layout_below="@+id/check_bar"
+        android:layout_alignEnd="@+id/check_interval" />
+
+    <SeekBar
+        android:id="@+id/report_bar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/report_interval"
+        android:layout_marginTop="21dp"
+        android:max="10"
+        android:progress="3" />
+
+    <EditText
+        android:id="@+id/report_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/missed_checks"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="report" />
+
+    <TextView
+        android:id="@+id/missed_checks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:text="Max Missed Checks"
+        android:layout_below="@+id/report_bar"
+        android:layout_alignStart="@+id/check_interval" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="3"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/missed_checks"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/miss_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/missed_checks"
+        android:layout_alignTop="@+id/seekBar"
+        android:layout_marginTop="33dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Missed" />
+
+    <Button
+        android:id="@+id/settings_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp"
+        android:text="Save" />
+
+</RelativeLayout>

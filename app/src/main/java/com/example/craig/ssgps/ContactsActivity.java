@@ -1,39 +1,63 @@
 package com.example.craig.ssgps;
 
-import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class Contacts extends Fragment {
+import java.util.ArrayList;
 
-    public Contacts() {
-        // Required empty public constructor
-    }
+public class ContactsActivity extends AppCompatActivity {
+    ContactDBHelper contactsDB;
+    Button addContact;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v =inflater.inflate(R.layout.fragment_contacts, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_contacts);
 
-        Button newPage = (Button)v.findViewById(R.id.new_contact);
-        newPage.setOnClickListener(new View.OnClickListener() {
+        ListView listView = (ListView) findViewById(R.id.list_contacts);
+        contactsDB = new ContactDBHelper(this);
 
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddContact.class);
-                startActivity(intent);
+
+        //populate an ArrayList<String> from the database and then view it
+        ArrayList<String> theList = new ArrayList<>();
+        Cursor data = contactsDB.getAllData();
+        if(data.getCount() == 0){
+            Toast.makeText(this, "There are no contents in this list!",Toast.LENGTH_LONG).show();
+        }else {
+            while (data.moveToNext()) {
+                theList.add(data.getString(2));
+                ContactList_Custom adapter = new ContactList_Custom(theList,this, data.getString(0));
+                listView.setAdapter(adapter);
             }
-        });
-        return v;
+        }
+
+
+
+        addContact = (Button)findViewById(R.id.new_contact);
+        addContact.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent;
+                        intent = new Intent(ContactsActivity.this, AddContact.class);
+//                      intent.putExtra();
+                        startActivity(intent);
+                    }
+                }
+
+        );
+
     }
-
-
 
 }
