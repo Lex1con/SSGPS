@@ -1,8 +1,13 @@
 package com.example.craig.ssgps;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,14 +26,23 @@ public class MainActivity extends AppCompatActivity
 
     private String email;
     private String name;
-
+    private static  final int MY_PERMISSION_CODE = 234;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("MainActivity", "Starting Process");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        boolean hasPermission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        if(!hasPermission){
+            ActivityCompat.requestPermissions(this,
+                    new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSION_CODE);
+        }
+        Intent intent = new Intent(this, LocationService.class);
+        startService(intent);
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
 

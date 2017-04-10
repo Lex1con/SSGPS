@@ -52,7 +52,7 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
             view = inflater.inflate(R.layout.custom_list, null);
         }
 
-        contactsDB = new ContactDBHelper();
+//        contactsDB = new ContactDBHelper();
 
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
