@@ -1,39 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.craig.ssgps.ContactsActivity">
-
-    <!-- TODO: Update blank fragment layout -->
+    android:layout_height="match_parent">
 
     <EditText
         android:id="@+id/name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="Name"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/save_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Save Contact"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Save Contact" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:id="@+id/phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/name_text"
+        android:layout_below="@+id/name_text"
         android:layout_marginTop="25dp"
         android:ems="10"
         android:inputType="phone"
-        android:text="Phone Number"
-        android:layout_below="@+id/name_text"
-        android:layout_alignStart="@+id/name_text" />
+        android:hint="Phone Number" />
 
     <EditText
         android:id="@+id/priority_num"
@@ -44,15 +42,15 @@
         android:layout_marginTop="43dp"
         android:ems="10"
         android:inputType="number"
-        android:text="Priority" />
+        android:hint="Priority" />
 
     <Spinner
         android:id="@+id/priority_Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/priority_num"
-        android:layout_marginTop="34dp"
         android:layout_alignStart="@+id/priority_num"
+        android:layout_below="@+id/priority_num"
+        android:layout_marginTop="23dp"
         android:layout_alignEnd="@+id/priority_num" />
 
 </RelativeLayout>

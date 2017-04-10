@@ -1,9 +1,8 @@
 package com.example.craig.ssgps;
 
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +10,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
 
-import java.sql.SQLClientInfoException;
 import java.util.ArrayList;
 
 public class ContactList_Custom extends BaseAdapter implements ListAdapter{
-    private ArrayList<String> list = new ArrayList<String>();
+    private final Activity activity;
+    private ArrayList<SingleItem> list = new ArrayList<>();
     private Context context;
     private String i;
     ContactDBHelper contactsDB;
 
-    public ContactList_Custom(ArrayList<String> list, Context context) {
+    public ContactList_Custom(ArrayList<SingleItem> list, Context context, Activity activity) {
         this.list = list;
+        this.activity = activity;
         this.context = context;
     }
 
@@ -53,7 +54,7 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
 
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
-        listItemText.setText(list.get(position));
+        listItemText.setText(list.get(position).getName());
 
         //Handle buttons and add onClickListeners
         Button deleteBtn = (Button)view.findViewById(R.id.delete_contact);
@@ -62,6 +63,7 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                removeFromDb(position);
                 list.remove(position); //or some other task
                 notifyDataSetChanged();
             }
@@ -69,11 +71,24 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
         updateBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
+                updateContact(position);
                 notifyDataSetChanged();
             }
         });
 
         return view;
+    }
+
+    private void updateContact(int position) {
+        SingleItem item = (SingleItem) getItem(position);
+        UpdateFragment updateFragment = new UpdateFragment();
+        updateFragment.setTargetItem(item);
+        updateFragment.show(activity.getFragmentManager(),"TAG");
+
+    }
+
+    private void removeFromDb(int position) {
+        SingleItem item = (SingleItem) getItem(position);
+        new ContactDBHelper(context).deleteData(item);
     }
 }
