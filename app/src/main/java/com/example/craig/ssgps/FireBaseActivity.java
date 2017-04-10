@@ -28,8 +28,6 @@ public class FireBaseActivity extends AppCompatActivity {
     private String name;
     private String uid;
 
-    ArrayList<String> contactList;
-    ArrayList<String> settingsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,27 +42,17 @@ public class FireBaseActivity extends AppCompatActivity {
         firebaseUp = (Button)findViewById(R.id.firebase_Up);
         firebaseDl = (Button)findViewById(R.id.firebase_Dl);
 
-        settingsList = new ArrayList<>();
-        Cursor settingsData = settingsDB.getAllData();
-
-        contactList = new ArrayList<>();
-        Cursor contactData = contactsDB.getAllData();
-
-        if(contactData.getCount() == 0){
-            Log.d("List","empty");
+        ArrayList<SingleItem> contact_List = new ArrayList<>();
+        Cursor data = contactsDB.getAllData();
+        if(data.getCount() == 0){
+            Toast.makeText(this, "There are no contents in this list!",Toast.LENGTH_LONG).show();
         }else {
-            while (contactData.moveToNext()) {
-                contactList.add(contactData.getString(1));
+            while (data.moveToNext()) {
+                contact_List.add(new SingleItem(data.getString(1),data.getInt(0),data.getInt(2),data.getInt(3)));
             }
         }
 
-        if(settingsData.getCount() == 0){
-            Log.d("List","empty");
-        }else {
-            while (settingsData.moveToNext()) {
-                settingsList.add(contactData.getString(1));
-            }
-        }
+        pushToFirebase();
 
     }
 

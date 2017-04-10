@@ -74,7 +74,7 @@ public class UpdateFragment extends DialogFragment{
         }
         Intent i;
 //        finish();
-        Toast.makeText(getActivity(), "I am updating "+targetItem.getName()+" with id of "+targetItem.getId()+" to values "+name+" "+phone+" "+priority, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "I am updating "+targetItem.getName()+" with id of "+targetItem.getId()+" to values "+name+" "+phone+" "+priority, Toast.LENGTH_SHORT).show();
 
     }
 
