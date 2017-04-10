@@ -21,10 +21,9 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
     private String i;
     ContactDBHelper contactsDB;
 
-    public ContactList_Custom(ArrayList<String> list, Context context, String i) {
+    public ContactList_Custom(ArrayList<String> list, Context context) {
         this.list = list;
         this.context = context;
-        this.i = i;
     }
 
     @Override
@@ -52,8 +51,6 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
             view = inflater.inflate(R.layout.custom_list, null);
         }
 
-//        contactsDB = new ContactDBHelper();
-
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
         listItemText.setText(list.get(position));
@@ -65,7 +62,6 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.d("hallo","sd");
                 list.remove(position); //or some other task
                 notifyDataSetChanged();
             }
