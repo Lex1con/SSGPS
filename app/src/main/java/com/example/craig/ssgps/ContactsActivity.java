@@ -53,6 +53,7 @@ public class ContactsActivity extends AppCompatActivity {
                         intent = new Intent(ContactsActivity.this, AddContact.class);
 //                      intent.putExtra();
                         startActivity(intent);
+                        finish();
                     }
                 }
 

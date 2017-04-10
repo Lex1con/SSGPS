@@ -58,14 +58,9 @@ public class ContactDBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateData(String id,String number,String name,String priority) {
+    public boolean updateData(String id, String number,String name,String priority) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Contact_ID,id);
-        contentValues.put(Contact_NUM,number);
-        contentValues.put(Contact_NAME,name);
-        contentValues.put(Contact_Priority,priority);
-        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
+        db.execSQL("UPDATE "+TABLE_NAME+" SET name = '"+name+"', number = '"+number+"', priority ='"+priority+"' WHERE ID = "+id+";");
         return true;
     }
 

@@ -14,15 +14,7 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name" />
-
-    <Button
-        android:id="@+id/save_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Save Contact" />
+        android:hint="Name" />
 
     <EditText
         android:id="@+id/phone_number"
@@ -31,28 +23,25 @@
         android:layout_marginTop="25dp"
         android:ems="10"
         android:inputType="phone"
-        android:text="Phone Number"
+        android:hint="Phone Number"
         android:layout_below="@+id/name_text"
         android:layout_alignStart="@+id/name_text" />
-
-    <EditText
-        android:id="@+id/priority_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/phone_number"
-        android:layout_below="@+id/phone_number"
-        android:layout_marginTop="43dp"
-        android:ems="10"
-        android:inputType="number"
-        android:text="Priority" />
 
     <Spinner
         android:id="@+id/priority_Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/priority_num"
-        android:layout_marginTop="34dp"
-        android:layout_alignStart="@+id/priority_num"
-        android:layout_alignEnd="@+id/priority_num" />
+        android:layout_marginTop="41dp"
+        android:layout_below="@+id/phone_number"
+        android:layout_alignStart="@+id/phone_number"
+        android:layout_alignEnd="@+id/phone_number" />
+
+    <Button
+        android:id="@+id/save_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Save Contact" />
 
 </RelativeLayout>

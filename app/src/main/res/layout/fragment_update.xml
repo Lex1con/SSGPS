@@ -33,24 +33,13 @@
         android:inputType="phone"
         android:hint="Phone Number" />
 
-    <EditText
-        android:id="@+id/priority_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/phone_number"
-        android:layout_below="@+id/phone_number"
-        android:layout_marginTop="43dp"
-        android:ems="10"
-        android:inputType="number"
-        android:hint="Priority" />
-
     <Spinner
         android:id="@+id/priority_Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/priority_num"
-        android:layout_below="@+id/priority_num"
-        android:layout_marginTop="23dp"
-        android:layout_alignEnd="@+id/priority_num" />
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/phone_number"
+        android:layout_alignStart="@+id/phone_number"
+        android:layout_alignEnd="@+id/phone_number" />
 
 </RelativeLayout>
