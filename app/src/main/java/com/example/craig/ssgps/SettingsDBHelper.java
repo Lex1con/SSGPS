@@ -14,11 +14,11 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     public static final String CHECK_INTERVAL = "checks";
     public static final String REPORT_INTERVAL = "report";
     public static final String MAX_MISSED = "missed_checks";
-
+    private final static int version = 2;
 
     public SettingsDBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
-        SQLiteDatabase db = this.getWritableDatabase();
+        super(context, DB_NAME, null, version);
+//        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXIST "+TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
         onCreate(db);
 
     }

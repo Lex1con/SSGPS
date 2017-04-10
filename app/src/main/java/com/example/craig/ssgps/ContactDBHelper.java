@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class ContactDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "ssgps.db";
     public static final String TABLE_NAME = "contacts_table";
@@ -15,10 +18,12 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     public static final String Contact_NAME = "name";
     public static final String Contact_Priority = "priority";
     SQLiteDatabase db = this.getWritableDatabase();
+    private final static int version = 2;
+
 
     public ContactDBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
-        SQLiteDatabase db = this.getWritableDatabase();
+        super(context, DB_NAME, null, version);
+//        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
@@ -28,7 +33,7 @@ public class ContactDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXIST "+TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
         onCreate(db);
 
     }
@@ -53,19 +58,17 @@ public class ContactDBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateData(String id,String number,String name,String priority) {
+    public boolean updateData(String id, String number,String name,String priority) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(Contact_ID,id);
-        contentValues.put(Contact_NUM,number);
-        contentValues.put(Contact_NAME,name);
-        contentValues.put(Contact_Priority,priority);
-        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
+        db.execSQL("UPDATE "+TABLE_NAME+" SET name = '"+name+"', number = '"+number+"', priority ='"+priority+"' WHERE ID = "+id+";");
         return true;
     }
 
-    public Integer deleteData (String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
+    public void deleteData(SingleItem name){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE from "+TABLE_NAME+" WHERE "+Contact_ID+" = "+name.getId());
+    }
+
+    public void updateData(SingleItem item) {
     }
 }

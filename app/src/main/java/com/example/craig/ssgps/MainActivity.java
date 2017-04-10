@@ -3,6 +3,7 @@ package com.example.craig.ssgps;
 import android.*;
 import android.Manifest;
 import android.content.Intent;
+import android.database.Cursor;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -26,7 +27,13 @@ public class MainActivity extends AppCompatActivity
 
     private String email;
     private String name;
+    private String uid;
+
+    SettingsDBHelper settingsDB;
+    SettingsDBHelper contactsDB;
+
     private static  final int MY_PERMISSION_CODE = 234;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +52,16 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
+        uid = getIntent().getStringExtra("uid");
 
+        settingsDB = new SettingsDBHelper(this);
+        contactsDB = new SettingsDBHelper(this);
+
+        Cursor s = settingsDB.getAllData();
+
+        if(s.getCount() == 0){
+            settingsDB.insertData("5","5","3");
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -105,23 +121,25 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         if (id == R.id.nav_locationActivity) {
             Intent intent;
             intent = new Intent(MainActivity.this, LocationActivity.class);
-//            intent.putExtra();
             startActivity(intent);
         } else if (id == R.id.nav_contactsActivity) {
             Intent intent;
             intent = new Intent(MainActivity.this, ContactsActivity.class);
-//            intent.putExtra();
             startActivity(intent);
         } else if (id == R.id.nav_settingsActivity) {
             Intent intent;
             intent = new Intent(MainActivity.this, SettingsActivity.class);
-//            intent.putExtra();
+            startActivity(intent);
+        }   else if (id == R.id.nav_firebaseActivity) {
+            Intent intent;
+            intent = new Intent(MainActivity.this, FireBaseActivity.class);
+            intent.putExtra("uid",uid);
             startActivity(intent);
         }
 

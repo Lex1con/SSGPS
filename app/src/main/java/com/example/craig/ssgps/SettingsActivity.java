@@ -5,13 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
     SettingsDBHelper settingsDB;
-    EditText editCheck, editReport, editMissed;
+    String editCheck, editReport, editMissed;
     Button saveSettings;
 
     @Override
@@ -20,12 +24,55 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         settingsDB = new SettingsDBHelper(this);
-        editCheck = (EditText)findViewById(R.id.check_text);
-        editReport = (EditText)findViewById(R.id.report_text);
-        editMissed = (EditText)findViewById(R.id.miss_text);
+
+        final Spinner c_spinner = (Spinner) findViewById(R.id.check_Spinner);
+        c_spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.check_int)));
+
+        c_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editCheck = ((TextView)view).getText().toString();
+//                Toast.makeText(SettingsActivity.this,((TextView)view).getText().toString()+"",Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        final Spinner r_spinner = (Spinner) findViewById(R.id.report_Spinner);
+        r_spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.report_int)));
+
+        r_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editReport = ((TextView)view).getText().toString();
+//                Toast.makeText(SettingsActivity.this,((TextView)view).getText().toString()+"",Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        final Spinner m_spinner = (Spinner) findViewById(R.id.missed_Spinner);
+        m_spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.missed_int)));
+
+        m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editMissed = ((TextView)view).getText().toString();
+//                Toast.makeText(SettingsActivity.this,((TextView)view).getText().toString()+"",Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         saveSettings = (Button)findViewById(R.id.settings_save);
-//        AddData();
         UpdateData();
+//        AddData();
     }
 
     public  void AddData() {
@@ -33,9 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean isInserted = settingsDB.insertData(editCheck.getText().toString(),
-                                editReport.getText().toString(),
-                                editMissed.getText().toString());
+                        boolean isInserted = settingsDB.insertData(editCheck, editReport, editMissed);
                         if(isInserted == true) {
                             Toast.makeText(SettingsActivity.this, "Settings Saved", Toast.LENGTH_LONG).show();
                         }
@@ -54,9 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean isUpdate = settingsDB.updateData(editCheck.getText().toString(),
-                                editReport.getText().toString(),
-                                editMissed.getText().toString());
+                        boolean isUpdate = settingsDB.updateData(editCheck, editReport, editMissed);
                         if(isUpdate == true)
                             Toast.makeText(SettingsActivity.this,"Settings Saved",Toast.LENGTH_LONG).show();
                         else

@@ -30,14 +30,14 @@ public class ContactsActivity extends AppCompatActivity {
 
 
         //populate an ArrayList<String> from the database and then view it
-        ArrayList<String> theList = new ArrayList<>();
+        ArrayList<SingleItem> theList = new ArrayList<>();
         Cursor data = contactsDB.getAllData();
         if(data.getCount() == 0){
             Toast.makeText(this, "There are no contents in this list!",Toast.LENGTH_LONG).show();
         }else {
             while (data.moveToNext()) {
-                theList.add(data.getString(1));
-                ContactList_Custom adapter = new ContactList_Custom(theList,this);
+                theList.add(new SingleItem(data.getString(1),data.getInt(0),data.getInt(2),data.getInt(3)));
+                ContactList_Custom adapter = new ContactList_Custom(theList,this,this);
                 listView.setAdapter(adapter);
             }
         }
@@ -53,6 +53,7 @@ public class ContactsActivity extends AppCompatActivity {
                         intent = new Intent(ContactsActivity.this, AddContact.class);
 //                      intent.putExtra();
                         startActivity(intent);
+                        finish();
                     }
                 }
 

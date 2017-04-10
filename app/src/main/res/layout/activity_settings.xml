@@ -2,102 +2,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.craig.ssgps.Settings">
+    tools:context="com.example.craig.ssgps.SettingsActivity">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:id="@+id/check_interval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Check Interval"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="14dp" />
+        android:layout_alignParentStart="true">
 
-    <SeekBar
-        android:id="@+id/check_bar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:max="3"
-        android:progress="1"
-        android:layout_below="@+id/check_interval"
-        android:layout_alignParentStart="true" />
+        <TextView
+            android:id="@+id/check_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="14dp"
+            android:text="Check Interval" />
 
-    <EditText
-        android:id="@+id/check_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/settings_save"
-        android:layout_below="@+id/check_bar"
-        android:layout_marginTop="14dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="check" />
+        <Spinner
+            android:id="@+id/check_Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/report_interval"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="81dp"
-        android:text="Report Interval"
-        android:layout_below="@+id/check_bar"
-        android:layout_alignEnd="@+id/check_interval" />
+        <TextView
+            android:id="@+id/report_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/check_text"
+            android:layout_below="@+id/check_text"
+            android:layout_marginTop="39dp"
+            android:text="Report Interval" />
 
-    <SeekBar
-        android:id="@+id/report_bar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/report_interval"
-        android:layout_marginTop="21dp"
-        android:max="10"
-        android:progress="3" />
+        <Spinner
+            android:id="@+id/report_Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/report_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/missed_checks"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="report" />
+        <TextView
+            android:id="@+id/missed_checks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/report_text"
+            android:layout_marginTop="25dp"
+            android:layout_toStartOf="@+id/settings_save"
+            android:text="Max Missed Checks" />
 
-    <TextView
-        android:id="@+id/missed_checks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:text="Max Missed Checks"
-        android:layout_below="@+id/report_bar"
-        android:layout_alignStart="@+id/check_interval" />
+        <Spinner
+            android:id="@+id/missed_Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="3"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/missed_checks"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:id="@+id/miss_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/missed_checks"
-        android:layout_alignTop="@+id/seekBar"
-        android:layout_marginTop="33dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Missed" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/settings_save"
