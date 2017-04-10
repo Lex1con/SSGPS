@@ -59,33 +59,9 @@ public class MainActivity extends AppCompatActivity
         ).commit();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//
-//        new AlertDialog.Builder(this)
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .setTitle("Closing Activity")
-//                .setMessage("Are you sure you want to close this activity?")
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-//                {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        finish();
-//                    }
-//
-//                })
-//                .setNegativeButton("No", null)
-//                .show();
-//    }
-
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        moveTaskToBack(true);
     }
 
     @Override

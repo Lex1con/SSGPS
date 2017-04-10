@@ -36,8 +36,8 @@ public class ContactsActivity extends AppCompatActivity {
             Toast.makeText(this, "There are no contents in this list!",Toast.LENGTH_LONG).show();
         }else {
             while (data.moveToNext()) {
-                theList.add(data.getString(2));
-                ContactList_Custom adapter = new ContactList_Custom(theList,this, data.getString(0));
+                theList.add(data.getString(1));
+                ContactList_Custom adapter = new ContactList_Custom(theList,this);
                 listView.setAdapter(adapter);
             }
         }
