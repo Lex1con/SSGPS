@@ -23,6 +23,8 @@ public class FireBaseActivity extends AppCompatActivity {
     Button firebaseDl;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("message");
+    ArrayList<SingleItem> contact_List;
+    SettingItem settings;
 
     private String email;
     private String name;
@@ -42,7 +44,7 @@ public class FireBaseActivity extends AppCompatActivity {
         firebaseUp = (Button)findViewById(R.id.firebase_Up);
         firebaseDl = (Button)findViewById(R.id.firebase_Dl);
 
-        ArrayList<SingleItem> contact_List = new ArrayList<>();
+        contact_List = new ArrayList<>();
         Cursor data = contactsDB.getAllData();
         if(data.getCount() == 0){
             Toast.makeText(this, "There are no contents in this list!",Toast.LENGTH_LONG).show();
@@ -50,6 +52,14 @@ public class FireBaseActivity extends AppCompatActivity {
             while (data.moveToNext()) {
                 contact_List.add(new SingleItem(data.getString(1),data.getInt(0),data.getInt(2),data.getInt(3)));
             }
+        }
+
+        Cursor data2 = settingsDB.getAllData();
+        if(data.getCount() == 0){
+            Toast.makeText(this, "There are no settings!",Toast.LENGTH_LONG).show();
+        }else{
+            data2.moveToFirst();
+            settings = new SettingItem(data2.getInt(0), data2.getInt(1), data2.getInt(2), data2.getInt(3));
         }
 
         pushToFirebase();
@@ -61,19 +71,52 @@ public class FireBaseActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                 e       addRecord();
+                        Log.d("FireBaseActivity","Saving Data");
+                        saveContacts();
+                        saveSetting(settings);
+                        Toast.makeText(FireBaseActivity.this, "Data Saved to Cloud",Toast.LENGTH_SHORT).show();
                     }
                 }
         );
     }
 
-    public void addRecord(String name, String number, String priority){
+    public void saveContacts(){
+        Log.d("FireBaseActivity","Saving contacts to cloud");
+        for(int i = 0; i < contact_List.size(); i++){
+            String name = contact_List.get(i).getName();
+            String number = String.valueOf(contact_List.get(i).getNumber());
+            int priority = contact_List.get(i).getPriority();
+
+            addRecord(name, number, priority);
+            Log.d("FireBaseActivity","Contacts Saved to Firebase");
+        }
+    }
+
+    public void addRecord(String name, String number, int priority){
+        Log.d("FireBaseActivity","Adding Contact");
+
         Map map = new HashMap();
         map.put("C_name", name);
         map.put("C_number", number);
         map.put("C_priority", priority);
-        DatabaseReference logRef = database.getReference("logs");
+        DatabaseReference logRef = database.getReference("Users");
         logRef.child(uid).child("Contacts").setValue(map);
+
+        Log.d("FireBaseActivity","Contact Added");
+    }
+
+    public void saveSetting(SettingItem setting){
+        Log.d("FireBaseActivity","Adding Contact");
+
+        Map map = new HashMap();
+        map.put("ID",setting.getID());
+        map.put("Checks",setting.getChecks());
+        map.put("Report",setting.getReport());
+        map.put("Missed",setting.getMissed());
+        DatabaseReference logRef = database.getReference("Users");
+        logRef.child(uid).child("Settings").setValue(map);
+
+        Log.d("FireBaseActivity","Contact Added");
 
     }
 
