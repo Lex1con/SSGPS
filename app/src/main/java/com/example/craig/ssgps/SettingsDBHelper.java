@@ -17,6 +17,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     public static final String CHECK_INTERVAL = "checks";
     public static final String REPORT_INTERVAL = "report";
     public static final String MAX_MISSED = "missed_checks";
+    SQLiteDatabase db = this.getWritableDatabase();
     private final static int version = 2;
 
     public SettingsDBHelper(Context context) {

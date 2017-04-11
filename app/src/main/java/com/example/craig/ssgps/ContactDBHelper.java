@@ -24,7 +24,6 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     SQLiteDatabase db = this.getWritableDatabase();
     private final static int version = 2;
 
-
     public ContactDBHelper(Context context) {
         super(context, DB_NAME, null, version);
 //        SQLiteDatabase db = this.getWritableDatabase();
@@ -39,7 +38,6 @@ public class ContactDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
         onCreate(db);
-
     }
 
 

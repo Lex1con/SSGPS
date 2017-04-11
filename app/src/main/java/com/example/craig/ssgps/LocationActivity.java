@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -78,17 +80,22 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+    private String uid;
+
+    ZoneDBHelper zonesDB;
 
     Button saveFences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        uid = getIntent().getStringExtra("uid");
         geofenceList = new ArrayList();
         markerList = new ArrayList();
         circleList = new ArrayList();
         uwiFenceList = new ArrayList();
         FenceDetails = new ArrayList();
+        zonesDB = new ZoneDBHelper(this);
 
 
         if (savedInstanceState != null) {
@@ -208,16 +215,15 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     public boolean onMarkerClick(final Marker marker) {
                         new AlertDialog.Builder(LocationActivity.this)
                                 .setTitle("Create Fence")
-                                .setMessage("Would you like to Make this Zone Permanent?")
+                                .setMessage("Would you like to Delete this Zone?")
                                 .setNegativeButton(android.R.string.cancel,null)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-//                                        LatLng latLng = marker.getPosition();
-//                                        int id = Integer.valueOf(marker.getTitle());
-//                                        Object r = marker.getTag();
-//                                        addRecord(latLng,id, (Integer) r);
-//                                        deleteFence(marker);
+                                        LatLng latLng = marker.getPosition();
+                                        int id = Integer.valueOf(marker.getTitle());
+                                        Object r = marker.getTag();
+                                        deleteFence(marker);
                                     }
                                 })
                                 .create()
@@ -512,10 +518,61 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         map.put("latitude", latLng.latitude);
         map.put("longitude", latLng.longitude);
         map.put("Radius", rad);
-        DatabaseReference logRef = database.getReference("Fences");
-        logRef.child("uwiFences").child(ID).setValue(map);
+        DatabaseReference logRef = database.getReference("Users");
+        logRef.child(uid).child("Zones").child(ID).setValue(map);
         Log.d(TAG,"Record added");
 
+    }
+
+    public void saveToLocal(LatLng latlng, float radius){
+        String lat = String.valueOf(latlng.latitude);
+        String lon = String.valueOf(latlng.longitude);
+        String rad = String.valueOf(radius);
+        boolean isInserted = zonesDB.insertData(lat,lon, rad);
+        if(isInserted == true){
+            Toast.makeText(this, "Zones Saved Locally",Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "Zones not Saved Locally",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void generateFences(){
+        Cursor data = zonesDB.getAllData();
+        if(data.getCount() == 0){
+            Toast.makeText(this, "You have no zones!",Toast.LENGTH_LONG).show();
+        }
+        else{
+            int x = 0;
+            while (data.moveToNext()){
+                Map details = new HashMap();
+                details.put("latitude", data.getDouble(1));
+                details.put("longitude", data.getDouble(2));
+                details.put("radius", data.getDouble(3));
+                details.put("ID",x);
+                FenceDetails.add(details);
+
+                final MarkerOptions fenceMarker;
+                fenceMarker = new MarkerOptions()
+                        .draggable(true)
+                        .position(new LatLng(data.getDouble(1),data.getDouble(2)) )
+                        .title(String.valueOf(x));
+                fenceMarker.snippet("Radius: "+data.getDouble(3)+" \n Latitude: "+fenceMarker.getPosition().latitude+"\n Longitude: "+fenceMarker.getPosition().longitude);
+                Marker marker = mMap.addMarker(fenceMarker);
+                marker.setTag(data.getDouble(3));
+
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(fenceMarker.getPosition())
+                        .fillColor(0x40ff0000)
+                        .strokeColor(Color.TRANSPARENT)
+                        .radius(data.getDouble(3))
+                        .strokeWidth(2);
+                Circle circle = mMap.addCircle(circleOptions);
+                circleList.add(circle);
+                x++;
+
+            }
+        }
+        handleGeoFence();
     }
 
     public void saveUWIFences(){
@@ -529,6 +586,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             float radius = (float) m.get("radius");
             LatLng latlng = new LatLng(lat,lon);
             addRecord(latlng, id, radius);
+            saveToLocal(latlng, radius);
             Log.d(TAG,"Fence: "+id+" saved");
         }
         Log.d(TAG,"Fences Saved");

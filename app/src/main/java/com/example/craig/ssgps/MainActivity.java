@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity
     private String uid;
 
     SettingsDBHelper settingsDB;
-    SettingsDBHelper contactsDB;
+    ContactDBHelper contactsDB;
+    ZoneDBHelper zonesDB;
 
     private static  final int MY_PERMISSION_CODE = 234;
 
@@ -53,13 +54,16 @@ public class MainActivity extends AppCompatActivity
                     MY_PERMISSION_CODE);
         }
         Intent intent = new Intent(this, LocationService.class);
+        intent.putExtra("uid",uid);
         startService(intent);
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
         uid = getIntent().getStringExtra("uid");
 
         settingsDB = new SettingsDBHelper(this);
-        contactsDB = new SettingsDBHelper(this);
+        contactsDB = new ContactDBHelper(this);
+        zonesDB = new ZoneDBHelper(this);
+
 
         Cursor s = settingsDB.getAllData();
 
@@ -142,6 +146,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_locationActivity) {
             Intent intent;
             intent = new Intent(MainActivity.this, LocationActivity.class);
+            intent.putExtra("uid",uid);
             startActivity(intent);
         } else if (id == R.id.nav_contactsActivity) {
             Intent intent;

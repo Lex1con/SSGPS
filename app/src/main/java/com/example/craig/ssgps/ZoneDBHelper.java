@@ -8,6 +8,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.util.Log;
 
 /**
  * Created by Mikkel on 10/04/2017.
@@ -20,26 +22,28 @@ public class ZoneDBHelper extends SQLiteOpenHelper {
     public static final String Zone_Lat = "latitude";
     public static final String Zone_Lon = "longitude";
     public static final String Zone_Rad = "radius";
+    SQLiteDatabase db = this.getWritableDatabase();
+    private final static int version = 2;
 
     public ZoneDBHelper(Context context) {
-        super(context, DB_NAME, null, 1);
-        SQLiteDatabase db = this.getWritableDatabase();
+        super(context, DB_NAME, null, version);
+//        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL NOT NULL, latitude REAL NOT NULL, radius INTEGER)");
+        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL NOT NULL, longitude REAL NOT NULL, radius REAL)");
+        Log.d("ZoneDatabase","Table Created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXIST "+TABLE_NAME);
         onCreate(db);
-
     }
 
 
-    public boolean insertData(float lat,float lon,int radius) {
+    public boolean insertData(String lat,String lon, String radius) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Zone_Lat,lat);
@@ -58,7 +62,7 @@ public class ZoneDBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateData(String id,float lat,float lon,int radius) {
+    public boolean updateData(String id,double lat,double lon,float radius) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Zone_ID,id);
@@ -69,8 +73,8 @@ public class ZoneDBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deleteData (String id) {
+    public void deleteData (Location location) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
+        db.execSQL("DELETE from "+TABLE_NAME+" WHERE "+Zone_Lat+" = "+location.getLatitude()+" AND "+Zone_Lon+" = "+location.getLongitude());
     }
 }
