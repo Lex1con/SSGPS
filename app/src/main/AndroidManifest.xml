@@ -37,6 +37,7 @@
 
 
         <service android:name=".LocationService"/>
+        <service android:name=".GeofenceTransitionsIntentService"/>
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBFQjIZn8VJ6OjP2iGDRshpazbPesMEpvE" />
