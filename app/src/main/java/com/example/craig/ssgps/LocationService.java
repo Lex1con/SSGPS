@@ -54,6 +54,8 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     private boolean hasPermission = false;
 
+    public boolean inSafeZone = false;
+
     Globals g = Globals.getInstance();
 
 

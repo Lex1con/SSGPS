@@ -63,10 +63,17 @@ public class GeofenceTransitionsIntentService extends IntentService {
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
             Log.i(TAG, geofenceTransitionDetails);
+
+            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
+                String details = "You've Lef a safe zone";
+                sendSafetyNotification(details);
+
+            }
+
         } else {
             // Log the error.
-//            Log.e(TAG, getString(R.string.geofence_transition_invalid_type,
-//                    geofenceTransition));
+            Log.e(TAG, getString(R.string.geofence_transition_invalid_type,
+                    geofenceTransition));
         }
     }
 
@@ -115,7 +122,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
                 .setContentTitle(notificationDetails)
-                .setContentText("Transition string")
+                .setContentText(getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);
 
         // Dismiss notification once the user touches it.
@@ -129,14 +136,45 @@ public class GeofenceTransitionsIntentService extends IntentService {
         mNotificationManager.notify(0, builder.build());
     }
 
+    private void sendSafetyNotification(String notificationDetails){
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        stackBuilder.addParentStack(MainActivity.class);
+
+        stackBuilder.addNextIntent(notificationIntent);
+
+        PendingIntent notificationPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                        R.mipmap.ic_launcher))
+                .setColor(Color.RED)
+                .setContentTitle(notificationDetails)
+                .setContentText(getString(R.string.user_request))
+                .setContentIntent(notificationPendingIntent);
+
+        builder.setAutoCancel(true);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(0, builder.build());
+    }
+
     private String getTransitionString(int transitionType) {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                return "Geofence transition entered";
+                return getString(R.string.geofence_transition_entered);
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                return "Geofence transition exited";
+                return getString(R.string.geofence_transition_exited);
             default:
-                return "Geofence transition unknown";
+                return getString(R.string.unknown_geofence_transition);
         }
     }
 }
