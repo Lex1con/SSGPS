@@ -34,7 +34,9 @@
         <activity android:name=".LocationActivity" />
         <activity android:name=".ContactsActivity" />
         <activity android:name=".FireBaseActivity"></activity>
-
+        <activity android:name="com.example.craig.ssgps.SendSMSActivity" android:label="@string/title_activity_SMS">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.example.craig.ssgps.MainActivity" />
+        </activity>
 
         <service android:name=".LocationService"/>
 

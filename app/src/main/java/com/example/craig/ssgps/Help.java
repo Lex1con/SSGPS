@@ -1,8 +1,10 @@
 package com.example.craig.ssgps;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,7 @@ import android.widget.Toast;
  * A simple {@link Fragment} subclass.
  */
 public class Help extends Fragment {
-
+    Globals g = Globals.getInstance();
 
     public Help() {
         // Required empty public constructor
@@ -28,14 +30,21 @@ public class Help extends Fragment {
         ((Button)v.findViewById(R.id.help_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendSMS();
+                sendSMS(v);
             }
         });
         return v;
     }
 
-    private void sendSMS() {
-        Toast.makeText(getContext(), "Should sednd sms herree", Toast.LENGTH_SHORT).show();
+    private void sendSMS(View v) {
+        g.setDanger(true);
+        Toast.makeText(getContext(), "Attempting to call sendSMS", Toast.LENGTH_SHORT).show();
+        Log.d("HelpActivity","Attempting to call sendSMS");
+        Bundle bundle = new Bundle();
+
+        Intent i = new Intent(v.getContext(), SendSMSActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
 }

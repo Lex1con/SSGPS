@@ -79,8 +79,18 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Globals g = Globals.getInstance();
+        g.setDanger(false);
 
+        boolean hasPermission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+
+        if(!hasPermission2){//sms permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.SEND_SMS},
+                    MY_PERMISSION_CODE);
+        }
         Help helpFragment = new Help();
+
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(
                 R.id.relative_layout,
