@@ -56,6 +56,7 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
 
     public boolean inSafeZone = false;
 
+    Globals g = Globals.getInstance();
 
 
 //    SQLiteOpenHelper helper = new DBHelper(this);
@@ -89,6 +90,8 @@ public class LocationService extends IntentService implements GoogleApiClient.Co
                 @Override
                 public void onLocationChanged(Location location) {
                     Log.d("Location Service"," New location: Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude());
+                    g.setLat(String.valueOf(location.getLatitude()));
+                    g.setLon(String.valueOf(location.getLongitude()));
 //                    Toast.makeText(getApplicationContext(), "Latitiude: " + location.getLatitude()+ " Longitude: "+location.getLongitude(), Toast.LENGTH_SHORT).show();
                     lastlocation.set(location);
                 }
