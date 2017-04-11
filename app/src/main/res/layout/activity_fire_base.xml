@@ -13,6 +13,9 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="119dp"
+        android:textColor="#fff"
+        android:textSize="40dp"
+        android:background="@drawable/firebase_logo"
         android:text="Upload" />
 
     <!--<Button-->

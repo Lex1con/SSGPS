@@ -48,9 +48,9 @@ public class SendSMSActivity extends AppCompatActivity {
             for(int i=0; i<size; i++){//loops through all contacts in local database and send sms msg to all
                 SingleItem item = theList.get(i);
                 Log.d("SMSSctivity", "i="+i+" "+item.getNumber());
-                if(item.getPriority() == 1) {
-                    Toast.makeText(getApplicationContext(), "Alert" + msg + " Sent! to" + item.getNumber(),
-                            Toast.LENGTH_LONG).show();
+//                if(item.getPriority() == 1) {
+                    //Toast.makeText(getApplicationContext(), "Alert" + msg + " Sent! to" + item.getNumber(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Messages Sent to Contacts", Toast.LENGTH_LONG).show();
                     String phoneNo = String.valueOf(item.getNumber());
                     String sms = msg;
 
@@ -66,7 +66,7 @@ public class SendSMSActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
-                }
+//                }
             }
         }
 
