@@ -86,24 +86,26 @@ public class FireBaseActivity extends AppCompatActivity {
     public void saveContacts(){
         Log.d("FireBaseActivity","Saving contacts to cloud");
         for(int i = 0; i < contact_List.size(); i++){
+            int ID = contact_List.get(i).getId();
             String name = contact_List.get(i).getName();
             String number = String.valueOf(contact_List.get(i).getNumber());
             int priority = contact_List.get(i).getPriority();
-
-            addRecord(name, number, priority);
+            addRecord(ID,name, number, priority);
             Log.d("FireBaseActivity","Contacts Saved to Firebase");
         }
     }
 
-    public void addRecord(String name, String number, int priority){
+    public void addRecord(int ID,String name, String number, int priority){
         Log.d("FireBaseActivity","Adding Contact");
-
+        Log.d("FirebaseActivity","Contact Name: "+name);
+        Log.d("FirebaseActivity","Contact Number: "+number);
+        String id = String.valueOf(ID);
         Map map = new HashMap();
         map.put("C_name", name);
         map.put("C_number", number);
         map.put("C_priority", priority);
         DatabaseReference logRef = database.getReference("Users");
-        logRef.child(uid).child("Contacts").setValue(map);
+        logRef.child(uid).child("Contacts").child(id).setValue(map);
 
         Log.d("FireBaseActivity","Contact Added");
     }
