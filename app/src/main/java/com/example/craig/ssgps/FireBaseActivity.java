@@ -119,5 +119,4 @@ public class FireBaseActivity extends AppCompatActivity {
         Log.d("FireBaseActivity","Contact Added");
 
     }
-
 }
