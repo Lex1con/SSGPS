@@ -1,8 +1,10 @@
+/*
+Class for storing objects from the contacts database.
+ */
+
 package com.example.craig.ssgps;
 
-/**
- * Created by Craig on 10/04/2017.
- */
+
 
 public class SingleItem {
     private String name;

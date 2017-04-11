@@ -1,3 +1,6 @@
+/*
+Updates the user's emergency contact information when the update button is pressed.
+ */
 package com.example.craig.ssgps;
 
 import android.app.DialogFragment;

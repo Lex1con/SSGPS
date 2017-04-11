@@ -1,8 +1,9 @@
+/*
+
+ */
 package com.example.craig.ssgps;
 
-/**
- * Created by Mikkel on 10/04/2017.
- */
+
 
 public class SettingItem {
 

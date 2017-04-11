@@ -1,3 +1,6 @@
+/*
+This activity Handles all firebase interactions needed for cloud storage
+ */
 package com.example.craig.ssgps;
 
 import android.database.Cursor;
@@ -42,7 +45,7 @@ public class FireBaseActivity extends AppCompatActivity {
         contactsDB = new ContactDBHelper(this);
         settingsDB = new SettingsDBHelper(this);
         firebaseUp = (Button)findViewById(R.id.firebase_Up);
-        firebaseDl = (Button)findViewById(R.id.firebase_Dl);
+//        firebaseDl = (Button)findViewById(R.id.firebase_Dl);
 
         contact_List = new ArrayList<>();
         Cursor data = contactsDB.getAllData();

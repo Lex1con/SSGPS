@@ -1,3 +1,7 @@
+/*
+Calls the SendSMSActivity when help button is pressed.
+ */
+
 package com.example.craig.ssgps;
 
 

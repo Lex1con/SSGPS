@@ -1,3 +1,6 @@
+/*
+Activity handles google login on initial application start.
+ */
 package com.example.craig.ssgps;
 
 import android.content.Intent;

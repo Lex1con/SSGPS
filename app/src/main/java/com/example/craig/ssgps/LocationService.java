@@ -1,3 +1,8 @@
+/*
+Runs in the background of the application logging the gps location along with other background
+functionality.
+ */
+
 package com.example.craig.ssgps;
 
 import android.*;
@@ -31,9 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Mikkel on 09/04/2017.
- */
 
 public class LocationService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, CloseListener, ResultCallback<Status> {
 

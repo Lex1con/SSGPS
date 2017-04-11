@@ -1,3 +1,7 @@
+/*
+Activity pulls all the user's emergency contacts from the database and provides functionality
+for the user to add, edit or delete contacts.
+ */
 package com.example.craig.ssgps;
 
 import android.content.Intent;

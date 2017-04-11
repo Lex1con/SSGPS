@@ -1,8 +1,9 @@
+/*
+stores the global variables to be shared among activities
+ */
+
 package com.example.craig.ssgps;
 
-/**
- * Created by Craig on 10/04/2017.
- */
 
 public class Globals {
     private static Globals instance;

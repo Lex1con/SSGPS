@@ -1,3 +1,6 @@
+/*
+Activity tracks user location on map and handles the Safe Zone creation and monitoring.
+ */
 package com.example.craig.ssgps;
 
 import android.app.AlertDialog;

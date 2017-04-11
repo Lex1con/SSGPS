@@ -1,3 +1,8 @@
+/*
+When the Help fragment is created this class is called and attempts to send the gps location alert
+to all the contacts specified by the user.
+ */
+
 package com.example.craig.ssgps;
 
 import android.app.Activity;
@@ -13,19 +18,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-/**
- * Created by Che on 4/9/2017.
- */
 
 public class SendSMSActivity extends AppCompatActivity {
-    Button buttonSend;
-    EditText textPhoneNo;
-    EditText textSMS;
-    String contact="8683317613";
+
 
     Globals g = Globals.getInstance();
 
-    String msg="Latitude:"+g.getLat() +" Longitude: "+g.getLon();
+    String msg="User felt unsafe at https://www.google.tt/maps/@:"+g.getLat() +","+g.getLon()+"z";
     ContactDBHelper contactsDB;
 
 

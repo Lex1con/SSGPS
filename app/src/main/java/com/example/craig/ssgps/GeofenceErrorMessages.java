@@ -1,8 +1,6 @@
 package com.example.craig.ssgps;
 
-/**
- * Created by Mikkel on 14/03/2017.
- */
+
 /**
  * Copyright 2014 Google Inc. All Rights Reserved.
  *

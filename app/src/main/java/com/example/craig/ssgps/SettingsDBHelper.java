@@ -1,3 +1,6 @@
+/*
+Handles all interactions between the Settings table in the database
+ */
 package com.example.craig.ssgps;
 
 import android.content.ContentValues;

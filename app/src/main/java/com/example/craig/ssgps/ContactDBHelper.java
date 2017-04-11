@@ -1,3 +1,7 @@
+/*
+Handles all interactions between the Contacts table
+*/
+
 package com.example.craig.ssgps;
 
 

@@ -20,9 +20,7 @@ import java.util.List;
 
 import static com.google.android.gms.wearable.DataMap.TAG;
 
-/**
- * Created by Mikkel on 14/03/2017.
- */
+
 public class GeofenceTransitionsIntentService extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.

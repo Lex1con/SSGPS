@@ -4,19 +4,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_locationActivity"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_map_black_24dp"
             android:title="Locations" />
         <item
             android:id="@+id/nav_contactsActivity"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_person_black_24dp"
             android:title="Contacts" />
         <item
             android:id="@+id/nav_settingsActivity"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_settings_applications_black_24dp"
             android:title="Settings" />
         <item
             android:id="@+id/nav_firebaseActivity"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_cloud_black_24dp"
             android:title="Sync with Cloud" />
     </group>
 

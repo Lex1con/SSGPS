@@ -1,3 +1,7 @@
+/*
+The central activity of the application from which all other functions can be navigated to.
+Holds the help button a and logout option.
+ */
 package com.example.craig.ssgps;
 
 import android.*;
@@ -84,7 +88,8 @@ public class MainActivity extends AppCompatActivity
 
         boolean hasPermission2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
 
-        if(!hasPermission2){//sms permissions
+        //check for sms permissions
+        if(!hasPermission2){
             ActivityCompat.requestPermissions(this,
                     new String[] {Manifest.permission.SEND_SMS},
                     MY_PERMISSION_CODE);

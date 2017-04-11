@@ -1,3 +1,6 @@
+/*
+Handles all of the user's local preferences.
+ */
 package com.example.craig.ssgps;
 
 import android.content.Intent;

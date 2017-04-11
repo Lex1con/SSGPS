@@ -1,3 +1,7 @@
+/*
+When the save contact button is pressed the AddContact class is called and uses the contactDBHelper
+class to insert the contact from the form into the local sql database.
+*/
 package com.example.craig.ssgps;
 
 import android.content.Intent;
