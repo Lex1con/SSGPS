@@ -10,14 +10,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="67dp"
+        android:layout_width="78dp"
         android:layout_height="54dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src = "@drawable/ssgps2" />
+        android:src = "@drawable/ssgps_icon"
+        android:layout_weight="0.43" />
 
     <TextView
         android:layout_width="match_parent"

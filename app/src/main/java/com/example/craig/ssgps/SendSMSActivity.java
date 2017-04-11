@@ -57,8 +57,7 @@ public class SendSMSActivity extends AppCompatActivity {
                     try {//attempt to send message
                         SmsManager smsManager = SmsManager.getDefault();
                         smsManager.sendTextMessage(phoneNo, null, sms, null, null);
-                        Toast.makeText(getApplicationContext(), "Alert"+msg+" Sent! to"+theList.get(i).getNumber(),
-                                Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Alert"+msg+" Sent! to"+theList.get(i).getNumber(),Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
 
                         Toast.makeText(getApplicationContext(),
