@@ -63,7 +63,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
             Log.i(TAG, geofenceTransitionDetails);
 
             if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
-                String details = "You've Lef a safe zone";
+                String details = "You've exited a safe zone";
                 sendSafetyNotification(details);
 
             }

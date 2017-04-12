@@ -27,7 +27,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY, checks INTEGER, report INTEGER, missed_checks INTEGER)");
+        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY, checks INTEGER, report INTEGER, missed_checks INTEGER);");
     }
 
     @Override

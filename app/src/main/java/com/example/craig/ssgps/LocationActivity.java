@@ -357,7 +357,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         new AlertDialog.Builder(LocationActivity.this)
-                                .setTitle("Select a Radius size")
+                                .setTitle("Select a Radius size (in meters)")
                                 .setItems(R.array.radius_options, new DialogInterface.OnClickListener(){
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
