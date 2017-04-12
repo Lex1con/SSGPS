@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +25,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.craig.ssgps.models.Contact;
+import com.example.craig.ssgps.models.Settings;
+import com.example.craig.ssgps.models.Zones;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity
@@ -33,9 +37,9 @@ public class MainActivity extends AppCompatActivity
     private String name;
     private String uid;
 
-    SettingsDBHelper settingsDB;
-    ContactDBHelper contactsDB;
-    ZoneDBHelper zonesDB;
+    Settings settingsDB;
+    Contact contactsDB;
+    Zones zonesDB;
 
     private static  final int MY_PERMISSION_CODE = 234;
 
@@ -60,10 +64,11 @@ public class MainActivity extends AppCompatActivity
         name = getIntent().getStringExtra("name");
         uid = getIntent().getStringExtra("uid");
 
-        settingsDB = new SettingsDBHelper(this);
-        contactsDB = new ContactDBHelper(this);
-        zonesDB = new ZoneDBHelper(this);
 
+        DBHelper helper = new DBHelper(this);
+        settingsDB = new Settings(helper);
+        contactsDB = new Contact(helper);
+        zonesDB = new Zones(helper);
 
         Cursor s = settingsDB.getAllData();
 

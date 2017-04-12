@@ -1,44 +1,37 @@
-/*
-Handles all interactions between the Settings table in the database
- */
-package com.example.craig.ssgps;
+package com.example.craig.ssgps.models;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.craig.ssgps.DBHelper;
 
-public class SettingsDBHelper extends SQLiteOpenHelper {
-    public static final String DB_NAME = "ssgps.db";
-    public static final String TABLE_NAME = "settings_table";
+/**
+ * Created by Mikkel on 12/04/2017.
+ */
+
+public class Settings extends Model {
+    private static final String TABLE_NAME = "settings";
     public static final String Setting_ID = "ID";
     public static final String CHECK_INTERVAL = "checks";
     public static final String REPORT_INTERVAL = "report";
     public static final String MAX_MISSED = "missed_checks";
-    SQLiteDatabase db = this.getWritableDatabase();
-    private final static int version = 2;
 
-    public SettingsDBHelper(Context context) {
-        super(context, DB_NAME, null, version);
-//        SQLiteDatabase db = this.getWritableDatabase();
+
+    public Settings() {
+    }
+
+    public Settings(DBHelper helper) {
+        super(helper);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY, checks INTEGER, report INTEGER, missed_checks INTEGER);");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
-        onCreate(db);
-
+    public String getCreateSQL() {
+        return "create table "+TABLE_NAME+" (ID INTEGER PRIMARY KEY, checks INTEGER, report INTEGER, missed_checks INTEGER);";
     }
 
     public boolean insertData(String checks,String report,String missed_check) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(CHECK_INTERVAL,checks);
         contentValues.put(REPORT_INTERVAL,report);
@@ -51,14 +44,14 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = helper.getReadableDatabase();
         Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
         return res;
     }
 
     public boolean updateData(String checks,String report,String missed_check) {
         String id = "1";
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Setting_ID,id);
         contentValues.put(CHECK_INTERVAL,checks);
@@ -69,7 +62,7 @@ public class SettingsDBHelper extends SQLiteOpenHelper {
     }
 
     public Integer deleteData (String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
         return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
     }
 }

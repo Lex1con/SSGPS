@@ -16,6 +16,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.craig.ssgps.models.Contact;
+
 import java.util.ArrayList;
 
 
@@ -25,7 +28,7 @@ public class SendSMSActivity extends AppCompatActivity {
     Globals g = Globals.getInstance();
 
     String msg="User felt unsafe at https://www.google.tt/maps/@:"+g.getLat() +","+g.getLon()+"z";
-    ContactDBHelper contactsDB;
+    Contact contactsDB;
 
 
 
@@ -34,7 +37,7 @@ public class SendSMSActivity extends AppCompatActivity {
         Log.d("SMSSctivity", "SMS activity created");
         super.onCreate(savedInstanceState);
 
-        contactsDB = new ContactDBHelper(this);
+        contactsDB = new Contact(new DBHelper(this));
         Cursor data = contactsDB.getAllData();
         ArrayList<SingleItem> theList = new ArrayList<>();
         int size = data.getCount();

@@ -17,8 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Contact;
+
 public class AddContact extends AppCompatActivity {
-    ContactDBHelper addContact;
+    Contact addContact;
     EditText editName, editNumber;
     String editPriority;
     Button saveSettings;
@@ -29,7 +31,7 @@ public class AddContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
-        addContact = new ContactDBHelper(this);
+        addContact = new Contact(new DBHelper(this));
         editName = (EditText)findViewById(R.id.name_text);
         editNumber = (EditText)findViewById(R.id.phone_number);
 

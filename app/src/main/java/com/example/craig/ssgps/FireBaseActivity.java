@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Contact;
+import com.example.craig.ssgps.models.Settings;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,8 +22,8 @@ import java.util.Map;
 
 
 public class FireBaseActivity extends AppCompatActivity {
-    ContactDBHelper contactsDB;
-    SettingsDBHelper settingsDB;
+    Contact contactsDB;
+    Settings settingsDB;
     Button firebaseUp;
     Button firebaseDl;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -42,8 +44,9 @@ public class FireBaseActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
         uid = getIntent().getStringExtra("uid");
-        contactsDB = new ContactDBHelper(this);
-        settingsDB = new SettingsDBHelper(this);
+        DBHelper helper = new DBHelper(this);
+        contactsDB = new Contact(helper);
+        settingsDB = new Settings(helper);
         firebaseUp = (Button)findViewById(R.id.firebase_Up);
 //        firebaseDl = (Button)findViewById(R.id.firebase_Dl);
 

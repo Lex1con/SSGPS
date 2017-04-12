@@ -18,10 +18,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Contact;
+
 import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
-    ContactDBHelper contactsDB;
+    Contact contactsDB;
     Button addContact;
 
     @Override
@@ -30,7 +32,7 @@ public class ContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         ListView listView = (ListView) findViewById(R.id.list_contacts);
-        contactsDB = new ContactDBHelper(this);
+        contactsDB = new Contact(new DBHelper(this));
 
 
         //populate an ArrayList<String> from the database and then view it

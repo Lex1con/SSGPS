@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Zones;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -82,7 +83,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     private static final String KEY_LOCATION = "location";
     private String uid;
 
-    ZoneDBHelper zonesDB;
+    Zones zonesDB;
 
     Button saveFences;
 
@@ -95,7 +96,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         circleList = new ArrayList();
         uwiFenceList = new ArrayList();
         FenceDetails = new ArrayList();
-        zonesDB = new ZoneDBHelper(this);
+        zonesDB = new Zones(new DBHelper(this));
 
 
         if (savedInstanceState != null) {

@@ -16,8 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Settings;
+
 public class SettingsActivity extends AppCompatActivity {
-    SettingsDBHelper settingsDB;
+    Settings settingsDB;
     String editCheck, editReport, editMissed;
     Button saveSettings;
 
@@ -26,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        settingsDB = new SettingsDBHelper(this);
+        settingsDB = new Settings(new DBHelper(this));
 
         final Spinner c_spinner = (Spinner) findViewById(R.id.check_Spinner);
         c_spinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.check_int)));

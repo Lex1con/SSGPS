@@ -18,12 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.craig.ssgps.models.Contact;
 
 
 public class UpdateFragment extends DialogFragment{
     private SingleItem targetItem;
     private String editPrio;
-    private ContactDBHelper updateContact;
+    private Contact updateContact;
 
 
     @Nullable
@@ -33,7 +34,7 @@ public class UpdateFragment extends DialogFragment{
         ((EditText)v.findViewById(R.id.name_text)).setText(targetItem.getName());
         ((EditText)v.findViewById(R.id.phone_number)).setText(String.valueOf(targetItem.getNumber()));
 
-        updateContact = new ContactDBHelper(getActivity());
+        updateContact = new Contact(new DBHelper(getActivity()));
 
         final Spinner m_spinner = (Spinner) v.findViewById(R.id.priority_Spinner);
         m_spinner.setAdapter(new ArrayAdapter<>(getActivity(),android.R.layout.simple_dropdown_item_1line,getResources().getStringArray(R.array.prio_int)));

@@ -12,6 +12,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
 
+import com.example.craig.ssgps.models.Contact;
+
 import java.util.ArrayList;
 
 public class ContactList_Custom extends BaseAdapter implements ListAdapter{
@@ -19,7 +21,7 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
     private ArrayList<SingleItem> list = new ArrayList<>();
     private Context context;
     private String i;
-    ContactDBHelper contactsDB;
+    Contact contactsDB;
 
     public ContactList_Custom(ArrayList<SingleItem> list, Context context, Activity activity) {
         this.list = list;
@@ -89,6 +91,6 @@ public class ContactList_Custom extends BaseAdapter implements ListAdapter{
 
     private void removeFromDb(int position) {
         SingleItem item = (SingleItem) getItem(position);
-        new ContactDBHelper(context).deleteData(item);
+        new Contact(new DBHelper(context)).deleteData(item);
     }
 }
