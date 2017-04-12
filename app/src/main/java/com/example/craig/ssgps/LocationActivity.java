@@ -98,7 +98,6 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         FenceDetails = new ArrayList();
         zonesDB = new Zones(new DBHelper(this));
 
-
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
@@ -130,6 +129,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                 saveUWIFences();
             }
         });
+//        buildFences();
 
     }
 
@@ -240,8 +240,10 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
 
         });
+        buildFences();
 
         mMap.setOnMapLongClickListener(this);
+
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -591,6 +593,52 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             Log.d(TAG,"Fence: "+id+" saved");
         }
         Log.d(TAG,"Fences Saved");
+    }
+
+    void buildFences(){
+        Log.d(TAG,"Building Your Zones");
+        Cursor data = zonesDB.getAllData();
+        if(data.getCount() == 0){
+            Toast.makeText(this, "You have no safe zones",Toast.LENGTH_SHORT).show();
+        }else{
+            while (data.moveToNext()){
+                Map details = new HashMap();
+                details.put("latitude", data.getDouble(1));
+                details.put("longitude",data.getDouble(2) );
+                details.put("radius",data.getFloat(3));
+                details.put("ID", data.getInt(0));
+                FenceDetails.add(details);
+//                geofenceList.add(new Geofence.Builder()
+//                        .setRequestId(String.valueOf(details.get("ID")))
+//                        .setCircularRegion(
+//                                (double)details.get("latitude"),
+//                                (double)details.get("longitude"),
+//                                (float)details.get("radius")
+//                        )
+//                        .setExpirationDuration(-1)
+//                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+//                        .build()
+//                );
+                final MarkerOptions fenceMarker;
+                fenceMarker = new MarkerOptions()
+                        .draggable(true)
+                        .position(new LatLng(data.getDouble(1),data.getDouble(2)) )
+                        .title(String.valueOf(x));
+                fenceMarker.snippet("Radius: "+data.getFloat(3)+" \n Latitude: "+fenceMarker.getPosition().latitude+"\n Longitude: "+fenceMarker.getPosition().longitude);
+                Marker marker = mMap.addMarker(fenceMarker);
+                marker.setTag(data.getDouble(3));
+
+                CircleOptions circleOptions = new CircleOptions()
+                        .center(fenceMarker.getPosition())
+                        .fillColor(0x40ff0000)
+                        .strokeColor(Color.TRANSPARENT)
+                        .radius(data.getDouble(3))
+                        .strokeWidth(2);
+                Circle circle = mMap.addCircle(circleOptions);
+                circleList.add(circle);
+            }
+            handleGeoFence();
+        }
     }
 
 }
